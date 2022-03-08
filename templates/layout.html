@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    {% block head %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -20,6 +21,7 @@
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link href="https://getbootstrap.com/docs/4.0/examples/cover/cover.css" rel="stylesheet">
+    {% endblock %}
 </head>
 
 <body class="text-center">
@@ -28,17 +30,18 @@
         <header class="masthead mb-auto">
             <div class="inner">
                 {% set navbar = [
-                ('/', 'home', 'Home'),
-                ('/all_cars','all','All cars'),
-                ('/add_car','add','Add a car'),
-                ('/compare','compare','Compare cars'),
-                ('/login', 'login', ('My account' if user_data else 'Log in/Register'))
+                ('/', 'nav_home', 'Home'),
+                ('/all_cars','nav_all','All cars'),
+                ('/add_car','nav_add','Add a car'),
+                ('/compare','nav_compare','Compare cars'),
+                ('/login', 'nav_login', '')
                 ] -%}
 
                 {% set active_page = active_page|default('index') -%}
                 <nav class="nav nav-masthead justify-content-center">
                     {% for href, id, caption in navbar %}
-                    <a class="nav-link{{ id==active_page and ' active' or '' }}" href="{{ href }}">{{ caption }}</a>
+                    <a class="nav-link{{ ' active' if id==active_page else '' }}" id="{{ id }}" href="{{ href }}">{{
+                        caption }}</a>
                     {% endfor %}
                     <button type="button" id="sign-out" hidden="true" class="nav-link btn">Log
                         out</button>

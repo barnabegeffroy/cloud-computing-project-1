@@ -43,10 +43,5 @@ def login():
     return render_template('login.html', user_data=claims, error_mesnsage=error_message)
 
 
-@app.route('/logout')
-def logout():
-    return redirect('/')
-
-
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

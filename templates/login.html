@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
-{% set active_page = "login" %}
+{% set active_page = "nav_login" %}
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('static', filename='login.js') }}"></script>
+{% endblock %}
 {% block title %}Login{% endblock %}
 {% block h1 %}User section{% endblock %}
 {% block content %}
