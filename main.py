@@ -89,5 +89,71 @@ def putCar():
     return redirect('/')
 
 
+@app.route('/search_cars', methods=['GET'])
+def searchCars():
+    result = None
+    query = datastore_client.query(kind='Vehicules')
+
+    if request.args.get('name') != '':
+        query.add_filter('name', '=', request.args.get('name'))
+
+    if request.args.get('manufacturer') != '':
+        query.add_filter('manufacturer', '=', request.args.get('manufacturer'))
+
+    if request.args.get('min_year' != ''):
+        query.add_filter('year', '>=', request.args.get('min_year'))
+
+    if request.args.get('max_year') != '':
+        query.add_filter('year', '<=', request.args.get('max_year'))
+
+    if request.args.get('min_battery') != '':
+        query.add_filter('battery', '>=', request.args.get('min_battery'))
+
+    if request.args.get('max_battery') != '':
+        query.add_filter('battery', '<=', request.args.get('max_battery'))
+
+    if request.args.get('min_wltp') != '':
+        query.add_filter('wltp', '>=', request.args.get('min_wltp'))
+
+    if request.args.get('max_wltp') != '':
+        query.add_filter('wltp', '<=', request.args.get('max_wltp'))
+
+    if request.args.get('min_cost') != '':
+        query.add_filter('cost', '>=', request.args.get('min_cost'))
+
+    if request.args.get('max_cost') != '':
+        query.add_filter('cost', '<=', request.args.get('max_cost'))
+
+    if request.args.get('min_power') != '':
+        query.add_filter('power', '>=', request.args.get('min_power'))
+
+    if request.args.get('max_power') != '':
+        query.add_filter('power', '<=', request.args.get('max_power'))
+
+    result = query.fetch()
+
+    return render_template('result.html', cars_list=result)
+
+
+def findCar(id):
+    entity_key = datastore_client.key('Vehicules', id)
+    entity = datastore_client.get(entity_key)
+
+    return entity
+
+
+@app.route('/car_info/<int:id>')
+def carInfo(id):
+    car = None
+    error_message = None
+    try:
+        car = findCar(id)
+    except ValueError as exc:
+        error_message = str(exc)
+    if car == None:
+        redirect('/')
+    return render_template('car.html', car=car)
+
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

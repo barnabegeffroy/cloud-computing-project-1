@@ -5,26 +5,28 @@
 {% block classes %}text-center{% endblock %}
 {% block content %}
 {% if true %}
-<form class="multi-range-field my-5 pb-5">
+<form class="multi-range-field my-5 pb-5" action="/search_cars" method="get">
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" placeholder="The name of the vehicule">
+            <input type="text" class="form-control" id="name" name="name" placeholder="The name of the vehicule">
         </div>
         <div class="form-group col-md-6">
             <label for="manufacturer">Manufacturer</label>
-            <input type="password" class="form-control" id="manufacturer" placeholder="Manufacturer">
+            <input type="password" class="form-control" id="manufacturer" name="manufacturer"
+                placeholder="Manufacturer">
         </div>
     </div>
     <div class="form-row">
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label col-sm" for="year">Year</label>
-                <input class="form-control" id="year" name="year" type="number" min="1900" max="2022" step="1"
+                <input class="form-control" id="min_year" name="min_year" type="number" min="1900" max="2022" step="1"
                     placeholder="Min" />
             </div>
             <div class="form-group ">
-                <input class="form-control" type="number" min="1900" max="2022" step="1" placeholder="Max" />
+                <input class="form-control" id="max_year" name="max_year" type="number" min="1900" max="2022" step="1"
+                    placeholder="Max" />
             </div>
         </div>
         <div class="col border-right">

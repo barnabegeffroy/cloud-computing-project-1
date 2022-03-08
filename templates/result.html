@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% set active_page = "nav_all" %}
+{% block title %}Result{% endblock %}
+{% block h1 %}All our vehicules that match your research{% endblock %}
+{% block classes %}text-center{% endblock %}
+{% block content %}
+{% if true %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Manufacturer</th>
+            <th scope="col">Year</th>
+            <th scope="col">Battery size (Kwh)</th>
+            <th scope="col">WLTP range (Km)</th>
+            <th scope="col">Cost</th>
+            <th scope="col">Power (Kw)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for car in cars_list %}
+        <tr>
+            <th scope="row"><a href="/car_info/{{car['id']}}" class="btn btn-secondary stretched-link"
+                    target="_blank">{{ car['name'] }}</a></th>
+            <td>{{ car['manufacturer'] }}</td>
+            <td>{{ car['year'] }}</td>
+            <td>{{ car['battery'] }}</td>
+            <td>{{ car['wltp'] }}</td>
+            <td>{{ car['cost'] }}</td>
+            <td>{{ car['power'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="lead">No vehicules yet.</p>
+<p class="lead">
+    <a href="/add_car" class="btn btn-lg btn-secondary">Add one</a>
+</p>
+
+{% endif %}
+{% endblock %}

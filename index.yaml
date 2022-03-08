@@ -1,0 +1,10 @@
+indexes:
+- kind: Vehicules
+  properties:
+  - name: name
+  - name: year
+  # - name: manufacturer
+  # - name: battery  
+  # - name: wltp
+  # - name: cost  
+  # - name: power
