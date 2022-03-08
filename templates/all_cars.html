@@ -2,7 +2,81 @@
 {% set active_page = "nav_all" %}
 {% block title %}All cars{% endblock %}
 {% block h1 %}Here is all our vehicules{% endblock %}
+{% block classes %}text-center{% endblock %}
 {% block content %}
+{% if true %}
+<form class="multi-range-field my-5 pb-5">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="The name of the vehicule">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="manufacturer">Manufacturer</label>
+            <input type="password" class="form-control" id="manufacturer" placeholder="Manufacturer">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col border-right">
+            <div class="form-group ">
+                <label class="control-label col-sm" for="year">Year</label>
+                <input class="form-control" id="year" name="year" type="number" min="1900" max="2022" step="1"
+                    placeholder="Min" />
+            </div>
+            <div class="form-group ">
+                <input class="form-control" type="number" min="1900" max="2022" step="1" placeholder="Max" />
+            </div>
+        </div>
+        <div class="col border-right">
+            <div class="form-group ">
+                <label class="control-label col-sm" for="min_battery">Battery size in Kwh:</label>
+                <input class="form-control" id="min_battery" name="min_battery" type="number" min="0" step="1"
+                    placeholder="Min" />
+            </div>
+            <div class="form-group ">
+                <input class="form-control" id="max_battery" name="max_battery" type="number" min="0" step="1"
+                    placeholder="Max" />
+            </div>
+        </div>
+        <div class="col border-right">
+            <div class="form-group ">
+                <label class="control-label col-sm" for="min_wltp">WLTP range in Km:</label>
+                <input class="form-control" id="min_wltp" name="min_wltp" type="number" min="0" step="1"
+                    placeholder="Min" />
+            </div>
+            <div class="form-group ">
+                <input class="form-control" id="max_wltp" name="max_wltp" type="number" min="0" step="1"
+                    placeholder="Max" />
+            </div>
+        </div>
+        <div class="col border-right">
+            <div class="form-group ">
+                <label class="control-label col-sm" for="min_cost">Cost in €:</label>
+                <input class="form-control" id="min_cost" name="min_cost" type="number" min="0" step="1"
+                    placeholder="Min" />
+            </div>
+            <div class="form-group ">
+                <input class="form-control" id="max_cost" name="max_cost" type="number" min="0" step="1"
+                    placeholder="Max" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-group ">
+                <label class="control-label col-sm" for="min_power">Power in Kw:</label>
+                <input class="form-control" id="min_power" name="min_power" type="number" min="0" step="1"
+                    placeholder="Min" />
+            </div>
+            <div class="form-group ">
+                <input class="form-control" id="max_power" name="max_power" type="number" min="0" step="1"
+                    placeholder="Max" />
+            </div>
+        </div>
+
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -18,21 +92,22 @@
     <tbody>
         {% for car in cars_list %}
         <tr>
-            <th scope="row">car['name']</th>
-            <td>car['manufacturer']</td>
-            <td>car['year']</td>
-            <td>car['battery']</td>
-            <td>car['wltp']</td>
-            <td>car['cost']</td>
-            <td>car['power']</td>
+            <th scope="row">{{ car['name'] }}</th>
+            <td>{{ car['manufacturer'] }}</td>
+            <td>{{ car['year'] }}</td>
+            <td>{{ car['battery'] }}</td>
+            <td>{{ car['wltp'] }}</td>
+            <td>{{ car['cost'] }}</td>
+            <td>{{ car['power'] }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+<p class="lead">No vehicules yet.</p>
+<p class="lead">
+    <a href="/add_car" class="btn btn-lg btn-secondary">Add one</a>
+</p>
 
-
-
-
-
-
+{% endif %}
 {% endblock %}

@@ -24,9 +24,9 @@
     {% endblock %}
 </head>
 
-<body class="text-center">
+<body>
 
-    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <div class=" d-flex h-100 p-3 mx-auto flex-column">
         <header class="masthead mb-auto">
             <div class="inner">
                 {% set navbar = [
@@ -50,14 +50,14 @@
         </header>
 
         <main role="main" class="inner cover">
-            <h1 class="cover-heading">{% block h1 %}{% endblock %}</h1>
-            <div class="containter">
+            <h1 class="cover-heading text-center">{% block h1 %}{% endblock %}</h1>
+            <div class="containter {% block classes %}{% endblock %}">
                 {% block content %}{% endblock %}
             </div>
         </main>
 
         <footer class="mastfoot mt-auto">
-            <div class="inner">
+            <div class="inner text-center">
                 <p> Barnabé Geffroy - student number</p>
             </div>
         </footer>
