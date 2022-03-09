@@ -150,14 +150,21 @@ def findCar(id):
 @app.route('/car_info/<int:id>')
 def carInfo(id):
     car = None
-    error_message = None
-    try:
-        car = findCar(id)
-    except ValueError as exc:
-        error_message = str(exc)
-    if car == None:
+    car = findCar(id)
+    if False:
         redirect('/')
     return render_template('car.html', car=car)
+
+
+def deleteCarsById(id):
+    entity_key = datastore_client.key('Vehicules', id)
+    datastore_client.delete(entity_key)
+
+
+@app.route('/delete_car', methods=['POST'])
+def deleteCar():
+    deleteCarsById(int(request.form['car_id']))
+    return redirect('/')
 
 
 if __name__ == '__main__':
