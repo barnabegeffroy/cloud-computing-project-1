@@ -30,12 +30,17 @@ def login():
     return render_template('login.html', user_data=claims, error_message=error_message)
 
 
-@app.route('/all_cars')
-def allCars():
+@app.route('/find_cars')
+def findCars():
+    return render_template('find_cars.html')
+
+
+@app.route('/compare')
+def compare():
     result = None
     query = datastore_client.query(kind='Vehicules')
     result = query.fetch()
-    return render_template('all_cars.html', cars_list=result)
+    return render_template('compare.html', cars_list=result)
 
 
 @app.route('/add_car')

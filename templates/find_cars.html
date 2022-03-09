@@ -1,10 +1,9 @@
 {% extends "layout.html" %}
-{% set active_page = "nav_all" %}
-{% block title %}All cars{% endblock %}
-{% block h1 %}Here is all our vehicules{% endblock %}
+{% set active_page = "nav_find" %}
+{% block title %}Find cars{% endblock %}
+{% block h1 %}Here is find our vehicules{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
-{% if true %}
 <form class="multi-range-field my-5 pb-5" action="/search_cars" method="get">
     <div class="form-row">
         <div class="form-group col-md-6">
@@ -13,8 +12,7 @@
         </div>
         <div class="form-group col-md-6">
             <label for="manufacturer">Manufacturer</label>
-            <input type="password" class="form-control" id="manufacturer" name="manufacturer"
-                placeholder="Manufacturer">
+            <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Manufacturer">
         </div>
     </div>
     <div class="form-row">
@@ -79,37 +77,5 @@
 
     <button type="submit" class="btn btn-primary">Filter</button>
 </form>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Manufacturer</th>
-            <th scope="col">Year</th>
-            <th scope="col">Battery size (Kwh)</th>
-            <th scope="col">WLTP range (Km)</th>
-            <th scope="col">Cost</th>
-            <th scope="col">Power (Kw)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for car in cars_list %}
-        <tr>
-            <th scope="row">{{ car['name'] }}</th>
-            <td>{{ car['manufacturer'] }}</td>
-            <td>{{ car['year'] }}</td>
-            <td>{{ car['battery'] }}</td>
-            <td>{{ car['wltp'] }}</td>
-            <td>{{ car['cost'] }}</td>
-            <td>{{ car['power'] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p class="lead">No vehicules yet.</p>
-<p class="lead">
-    <a href="/add_car" class="btn btn-lg btn-secondary">Add one</a>
-</p>
 
-{% endif %}
 {% endblock %}

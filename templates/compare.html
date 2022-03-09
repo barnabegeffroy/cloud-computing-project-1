@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
-{% set active_page = "" %}
+{% set active_page = "nav_find" %}
 {% block title %}Find cars{% endblock %}
-{% block h1 %}{{ car['name'] }} - {{ car['manufacturer'] }}{% endblock %}
+{% block h1 %}Select vehicules you want to compare{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
+{% if true %}
 <table class="table table-striped">
     <thead>
         <tr>
@@ -17,6 +18,7 @@
         </tr>
     </thead>
     <tbody>
+        {% for car in cars_list %}
         <tr>
             <th scope="row">{{ car['name'] }}</th>
             <td>{{ car['manufacturer'] }}</td>
@@ -26,6 +28,14 @@
             <td>{{ car['cost'] }}</td>
             <td>{{ car['power'] }}</td>
         </tr>
+        {% endfor %}
     </tbody>
 </table>
+{% else %}
+<p class="lead">No vehicules yet.</p>
+<p class="lead">
+    <a href="/add_car" class="btn btn-lg btn-secondary">Add one</a>
+</p>
+
+{% endif %}
 {% endblock %}
