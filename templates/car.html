@@ -35,36 +35,37 @@
 <button class="btn btn btn-secondary" id="edit-car">Edit this vehicule</button>
 <button class="btn btn btn-secondary" id="hide-edition" hidden="true">Hide edition</button>
 <form class="multi-range-field my-5 pb-5" id="edit-car-form" action="/edit_car" method="post" hidden="true">
+    <input type="hidden" name="car_id_update" id="car_id_update" value="{{ car.key.id }}">
     <div class="form-row">
         <div class="form-group col-md-6">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ car['name'] }}">
+            <label for="new_name">Name</label>
+            <input type="text" class="form-control" id="new_name" name="new_name" value="{{ car['name'] }}">
         </div>
         <div class="form-group col-md-6">
-            <label for="manufacturer">Manufacturer</label>
-            <input type="text" class="form-control" id="manufacturer" name="manufacturer"
+            <label for="new_manufacturer">Manufacturer</label>
+            <input type="text" class="form-control" id="new_manufacturer" name="new_manufacturer"
                 value="{{ car['manufacturer'] }}">
         </div>
     </div>
     <div class="form-row">
         <div class="col border-right">
             <div class="form-group ">
-                <label class="control-label col-sm" for="year">Year:</label>
-                <input class="form-control" id="year" name="year" type="number" min="1900" max="2022" step="1"
+                <label class="control-label col-sm" for="new_year">Year:</label>
+                <input class="form-control" id="new_year" name="new_year" type="number" min="1900" max="2022" step="1"
                     value="{{ car['year'] }}" />
             </div>
         </div>
         <div class="col border-right">
             <div class="form-group ">
-                <label class="control-label col-sm" for="battery">Battery size in Kwh:</label>
-                <input class="form-control" id="battery" name="battery" type="number" min="0" step="1"
+                <label class="control-label col-sm" for="new_battery">Battery size in Kwh:</label>
+                <input class="form-control" id="new_battery" name="new_battery" type="number" min="0" step="1"
                     value="{{ car['battery'] }}" />
             </div>
         </div>
         <div class="col border-right">
             <div class="form-group ">
-                <label class="control-label col-sm" for="wltp">WLTP range in Km:</label>
-                <input class="form-control" id="wltp" name="wltp" type="number" min="0" step="1"
+                <label class="control-label col-sm" for="new_wltp">WLTP range in Km:</label>
+                <input class="form-control" id="new_wltp" name="new_wltp" type="number" min="0" step="1"
                     value="{{ car['wltp'] }}" />
             </div>
             <div class="form-group ">
@@ -73,16 +74,16 @@
         </div>
         <div class="col border-right">
             <div class="form-group ">
-                <label class="control-label col-sm" for="cost">Cost in €:</label>
-                <input class="form-control" id="cost" name="cost" type="number" min="0" step="1"
+                <label class="control-label col-sm" for="new_cost">Cost in €:</label>
+                <input class="form-control" id="new_cost" name="new_cost" type="number" min="0" step="1"
                     value="{{ car['cost'] }}" />
             </div>
 
         </div>
         <div class="col">
             <div class="form-group ">
-                <label class="control-label col-sm" for="power">Power in Kw:</label>
-                <input class="form-control" id="power" name="power" type="number" min="0" step="1"
+                <label class="control-label col-sm" for="new_power">Power in Kw:</label>
+                <input class="form-control" id="new_power" name="new_power" type="number" min="0" step="1"
                     value="{{ car['power'] }}" />
             </div>
         </div>
@@ -91,8 +92,8 @@
         <button type="submit" class="btn btn btn-secondary">Update this vehicule</button>
     </div>
 </form>
-<form class="multi-range-field my-5 pb-5" action="/delete_car" method="post">
-    <input type="hidden" id="car_id" name="car_id" value="{{ car['id'] }}">
+<form class="multi-range-field my-5 pb-5" id="delete-car-form" action="/delete_car" method="post">
+    <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.id }}">
     <button type="submit" class="btn btn btn-secondary">Delete this vehicule</button>
 </form>
 {% endblock %}

@@ -50,6 +50,14 @@
         </header>
 
         <main role="main" class="inner cover">
+            {% if message %}
+            <div
+                class="card d-flex justify-content-center text-center mb-5 {{'bg-success' if status=='success' else 'bg-danger' if status=='error' else 'bg-secondary' }}">
+                <div class="card-body">
+                    <p class="card-text">{{ message }}</p>
+                </div>
+            </div>
+            {% endif %}
             <h1 class="cover-heading text-center">{% block h1 %}{% endblock %}</h1>
             <div class="containter {% block classes %}{% endblock %}">
                 {% block content %}{% endblock %}
