@@ -37,7 +37,11 @@ def findCars():
 
 @app.route('/add_car', methods=['GET'])
 def addCar():
-    return render_template('add_car.html', message=request.args.get('message'), status=request.args.get('status'))
+    id_token = request.cookies.get("token")
+    if id_token:
+        return render_template('add_car.html', message=request.args.get('message'), status=request.args.get('status'))
+    else:
+        return redirect(url_for('.root', message="You must be logged in to add a car", status="error"))
 
 
 def createCar(name, manufacturer, year, battery, wltp, cost, power):

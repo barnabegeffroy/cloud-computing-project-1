@@ -14,7 +14,7 @@ window.addEventListener('load', function () {
             }
         } else {
             document.getElementById('edit-car').hidden = true;
-            // document.getElementById('delete-car-form').hidden = true;
+            document.getElementById('delete-car-form').hidden = true;
         }
     })
 })
