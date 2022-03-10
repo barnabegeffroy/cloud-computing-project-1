@@ -1,14 +1,14 @@
 {% extends "layout.html" %}
 {% set active_page = "nav_find" %}
 {% block title %}Find cars{% endblock %}
-{% block h1 %}Here is find our vehicules{% endblock %}
+{% block h1 %}Here is find our vehicles{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
 <form class="multi-range-field my-5 pb-5" action="/search_cars" method="get">
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="The name of the vehicule">
+            <input type="text" class="form-control" id="name" name="name" placeholder="The name of the vehicle">
         </div>
         <div class="form-group col-md-6">
             <label for="manufacturer">Manufacturer</label>

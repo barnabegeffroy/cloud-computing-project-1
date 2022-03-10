@@ -32,16 +32,19 @@
         </tr>
     </tbody>
 </table>
-<button class="btn btn btn-secondary" id="edit-car">Edit this vehicule</button>
+<button class="btn btn btn-secondary" id="edit-car">Edit this vehicle</button>
 <button class="btn btn btn-secondary" id="hide-edition" hidden="true">Hide edition</button>
 <form class="multi-range-field my-5 pb-5" id="edit-car-form" action="/edit_car" method="post" hidden="true">
     <input type="hidden" name="car_id_update" id="car_id_update" value="{{ car.key.id }}">
     <div class="form-row">
         <div class="form-group col-md-6">
+            <input type="hidden" id="current_name" name="current_name" value="{{ car['name'] }}">
             <label for="new_name">Name</label>
             <input type="text" class="form-control" id="new_name" name="new_name" value="{{ car['name'] }}">
         </div>
         <div class="form-group col-md-6">
+            <input type="hidden" id="current_manufacturer" name="current_manufacturer"
+                value="{{ car['manufacturer'] }}">
             <label for="new_manufacturer">Manufacturer</label>
             <input type="text" class="form-control" id="new_manufacturer" name="new_manufacturer"
                 value="{{ car['manufacturer'] }}">
@@ -50,6 +53,7 @@
     <div class="form-row">
         <div class="col border-right">
             <div class="form-group ">
+                <input class="form-control" id="current_year" name="current_year" value="{{ car['year'] }}" />
                 <label class="control-label col-sm" for="new_year">Year:</label>
                 <input class="form-control" id="new_year" name="new_year" type="number" min="1900" max="2022" step="1"
                     value="{{ car['year'] }}" />
@@ -89,11 +93,11 @@
         </div>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn btn-secondary">Update this vehicule</button>
+        <button type="submit" class="btn btn btn-secondary">Update this vehicle</button>
     </div>
 </form>
 <form class="multi-range-field my-5 pb-5" id="delete-car-form" action="/delete_car" method="post">
     <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.id }}">
-    <button type="submit" class="btn btn btn-secondary">Delete this vehicule</button>
+    <button type="submit" class="btn btn btn-secondary">Delete this vehicle</button>
 </form>
 {% endblock %}

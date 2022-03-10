@@ -8,14 +8,9 @@ datastore_client = datastore.Client()
 firebase_request_adapter = requests.Request()
 
 
-@app.route('/home', methods=['GET'])
-def home():
-    return render_template('index.html', message=request.args.get('message'), status=request.args.get('status'))
-
-
-@app.route('/')
+@app.route('/', methods=['GET'])
 def root():
-    return redirect('/home')
+    return render_template('index.html', message=request.args.get('message'), status=request.args.get('status'))
 
 
 @app.route('/login')
@@ -40,15 +35,15 @@ def findCars():
     return render_template('find_cars.html')
 
 
-@app.route('/add_car')
+@app.route('/add_car', methods=['GET'])
 def addCar():
-    return render_template('add_car.html')
+    return render_template('add_car.html', message=request.args.get('message'), status=request.args.get('status'))
 
 
 def createCar(name, manufacturer, year, battery, wltp, cost, power):
     id = abs(hash(name + manufacturer + year))
     entity_key = datastore_client.key(
-        'Vehicules', id)
+        'Vehicles', id)
     if datastore_client.get(entity_key):
         return None
     entity = datastore.Entity(entity_key)
@@ -65,7 +60,7 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
     return id
 
 
-@app.route('/put_car', methods=['POST'])
+@ app.route('/put_car', methods=['POST'])
 def putCar():
     id_token = request.cookies.get("token")
     message = None
@@ -75,26 +70,25 @@ def putCar():
             id = createCar(
                 request.form['name'], request.form['manufacturer'], request.form['year'], request.form['battery'], request.form['wltp'], request.form['cost'], request.form['power'])
             if id == None:
-                message = "You can't add this vehicule, it already exists !"
+                message = "You can't add this vehicle, it already exists !"
                 status = "error"
             else:
-                message = "The vehicule has been added succesfully !"
+                message = "The vehicle has been added succesfully !"
                 status = "success"
-                return redirect("car_info/"+str(id)+"?message="+message+"&status="+status)
-
+                return redirect(url_for('.carInfo', id=id, message=message, status=status))
         except ValueError as exc:
             error_message = str(exc)
     else:
         message = "You can't add a vehicul without being logged in"
         status = "error"
 
-    return redirect(url_for('.home', message=message, status=status))
+    return redirect(url_for('.addCar', message=message, status=status))
 
 
-@app.route('/search_cars', methods=['GET'])
+@ app.route('/search_cars', methods=['GET'])
 def searchCars():
     result = None
-    query = datastore_client.query(kind='Vehicules')
+    query = datastore_client.query(kind='Vehicles')
 
     if request.args.get('name') != '':
         query.add_filter('name', '=', request.args.get('name'))
@@ -138,26 +132,26 @@ def searchCars():
 
 
 def findCar(id):
-    entity_key = datastore_client.key('Vehicules', id)
+    entity_key = datastore_client.key('Vehicles', id)
     entity = datastore_client.get(entity_key)
     return entity
 
 
-@app.route('/car_info/<int:id>', methods=['GET'])
+@ app.route('/car_info/<int:id>', methods=['GET'])
 def carInfo(id):
     car = findCar(id)
     if car:
         return render_template('car.html', car=car, message=request.args.get('message'), status=request.args.get('status'))
     else:
-        return redirect(url_for('.home', message="This car does not exist", status="error"))
+        return redirect(url_for('.root', message="This car does not exist", status="error"))
 
 
 def deleteCarsById(id):
-    entity_key = datastore_client.key('Vehicules', id)
+    entity_key = datastore_client.key('Vehicles', id)
     datastore_client.delete(entity_key)
 
 
-@app.route('/delete_car', methods=['POST'])
+@ app.route('/delete_car', methods=['POST'])
 def deleteCar():
     id_token = request.cookies.get("token")
     message = None
@@ -165,18 +159,18 @@ def deleteCar():
     if id_token:
         try:
             deleteCarsById(int(request.form['car_id_delete']))
-            message = "Vehicule has been deleted !"
+            message = "Vehicle has been deleted !"
             status = "success"
         except ValueError as exc:
             error_message = str(exc)
     else:
-        message = "You must log in to delete a vehicule"
+        message = "You must log in to delete a vehicle"
         status = "error"
-    return redirect(url_for('.home', message=message, status=status))
+    return redirect(url_for('.root', message=message, status=status))
 
 
 def updateCarInfo(id, new_name, new_manufacturer, new_year, new_battery, new_wltp, new_cost, new_power):
-    entity_key = datastore_client.key('Vehicules', id)
+    entity_key = datastore_client.key('Vehicles', id)
     entity = datastore.Entity(key=entity_key)
     entity.update({
         'name': new_name,
@@ -190,30 +184,40 @@ def updateCarInfo(id, new_name, new_manufacturer, new_year, new_battery, new_wlt
     datastore_client.put(entity)
 
 
-@app.route('/edit_car', methods=['POST'])
+@ app.route('/edit_car', methods=['POST'])
 def editCar():
     id_token = request.cookies.get("token")
     message = None
     status = None
-
+    car_id = int(request.form['car_id_update'])
     if id_token:
-        try:
-            updateCarInfo(int(request.form['car_id_update']), request.form['new_name'], request.form['new_manufacturer'], request.form['new_year'],
+        if request.form['new_name'] == request.form['new_name'] and request.form['new_name'] == request.form['new_name'] and request.form['new_name']:
+            updateCarInfo(car_id, request.form['new_name'], request.form['new_manufacturer'], request.form['new_year'],
                           request.form['new_battery'], request.form['new_wltp'], request.form['new_cost'], request.form['new_power'])
-            message = "Vehicule has been updated !"
+            message = "Vehicle has been updated !"
             status = "success"
-        except ValueError as exc:
-            error_message = str(exc)
+
+        else:
+            new_car_id = createCar(request.form['new_name'], request.form['new_manufacturer'], request.form['new_year'],
+                                   request.form['new_battery'], request.form['new_wltp'], request.form['new_cost'], request.form['new_power'])
+            if car_id:
+                deleteCar(car_id)
+                car_id = new_car_id
+                message = "Vehicle has been updated !"
+                status = "success"
+            else:
+                message = "The information you wish to add corresponds to an existing vehicle"
+                status = "error"
     else:
-        message = "You must log in to update a vehicule"
+        message = "You must log in to update a vehicle"
         status = "error"
-    return redirect("car_info/"+request.form['car_id_update']+"?message="+message+"&status="+status)
+    return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
 
 
-@app.route('/compare')
+@ app.route('/compare')
 def compare():
     result = None
-    query = datastore_client.query(kind='Vehicules')
+    query = datastore_client.query(kind='Vehicles')
     result = query.fetch()
     return render_template('compare.html', cars_list=result)
 
