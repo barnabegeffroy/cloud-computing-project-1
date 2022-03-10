@@ -191,7 +191,7 @@ def editCar():
     status = None
     car_id = int(request.form['car_id_update'])
     if id_token:
-        if request.form['new_name'] == request.form['new_name'] and request.form['new_name'] == request.form['new_name'] and request.form['new_name']:
+        if request.form['new_name'] == request.form['current_name'] and request.form['new_manufacturer'] == request.form['current_manufacturer'] and request.form['new_year'] == request.form['current_year']:
             updateCarInfo(car_id, request.form['new_name'], request.form['new_manufacturer'], request.form['new_year'],
                           request.form['new_battery'], request.form['new_wltp'], request.form['new_cost'], request.form['new_power'])
             message = "Vehicle has been updated !"
@@ -201,7 +201,7 @@ def editCar():
             new_car_id = createCar(request.form['new_name'], request.form['new_manufacturer'], request.form['new_year'],
                                    request.form['new_battery'], request.form['new_wltp'], request.form['new_cost'], request.form['new_power'])
             if car_id:
-                deleteCar(car_id)
+                deleteCarsById(car_id)
                 car_id = new_car_id
                 message = "Vehicle has been updated !"
                 status = "success"
