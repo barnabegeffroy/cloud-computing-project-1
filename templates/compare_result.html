@@ -23,13 +23,20 @@
             <th scope="row"><a href="/car_info/{{car.key.id}}" class="btn btn-secondary stretched-link">{{
                     car['name'] }}</a></th>
             <td>{{ car['manufacturer'] }}</td>
-            <td>{{ car['year'] }}</td>
-            <td>{{ car['battery'] }}</td>
-            <td>{{ car['wltp'] }}</td>
-            <td>{{ car['cost'] }}</td>
-            <td>{{ car['power'] }}</td>
+            <td
+                class="{{ 'bg-success' if car['year'] == max['year'] else 'bg-danger' if car['year'] == min['year'] else 'bg-secondary'}}">
+                {{ car['year'] }}</td>
+            <td class=" {{ 'bg-success' if car['battery']==max['battery'] else 'bg-danger' if
+                car['battery']==min['battery'] else 'bg-secondary' }}">{{ car['battery'] }}</td>
+            <td
+                class="{{ 'bg-success' if car['wltp'] == max['wltp'] else 'bg-danger' if car['wltp'] == min['wltp'] else 'bg-secondary'}}">
+                {{ car['wltp'] }}</td>
+            <td class=" {{ 'bg-success' if car['cost']==max['cost'] else 'bg-danger' if car['cost']==min['cost']
+                else 'bg-secondary' }}">{{ car['cost'] }}</td>
+            <td
+                class="{{ 'bg-success' if car['power'] == max['power'] else 'bg-danger' if car['power'] == min['power'] else 'bg-secondary'}}">
+                {{ car['power'] }}</td>
         </tr>
         {% endfor %}
     </tbody>
-</table>
-{% endblock %}
+    {% endblock %}

@@ -236,13 +236,53 @@ def findCarsByIdList(list):
     return datastore_client.get_multi(entity_key_list)
 
 
+def getMinMax(list):
+    min = {
+        "year": int(list[0]['year']),
+        "battery": int(list[0]['battery']),
+        "wltp": int(list[0]['wltp']),
+        "cost": int(list[0]['cost']),
+        "power": int(list[0]['power'])
+    }
+    max = min.copy()
+    for car in list:
+        if int(car['year']) > max['year']:
+            max['year'] = int(car['year'])
+        if int(car['year']) < min['year']:
+            min['year'] = int(car['year'])
+
+        if int(car['battery']) > max['battery']:
+            max['battery'] = int(car['battery'])
+        if int(car['battery']) < min['battery']:
+            min['battery'] = int(car['battery'])
+
+        if int(car['wltp']) > max['wltp']:
+            max['wltp'] = int(car['wltp'])
+        if int(car['wltp']) < min['wltp']:
+            min['wltp'] = int(car['wltp'])
+
+        if int(car['cost']) > max['cost']:
+            max['cost'] = int(car['cost'])
+        if int(car['cost']) < min['cost']:
+            min['cost'] = int(car['cost'])
+
+        if int(car['power']) > max['power']:
+            max['power'] = int(car['power'])
+        if int(car['power']) < min['power']:
+            min['power'] = int(car['power'])
+    str_min = {key: str(value) for key, value in min.items()}
+    str_max = {key: str(value) for key, value in max.items()}
+    return (str_min, str_max)
+
+
 @app.route('/compare_result', methods=['POST'])
 def compareResult():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
         return redirect(url_for('.compare', message="You must select at least 2 vehicles to compare them", status="error"))
     result = findCarsByIdList(id_list)
-    return render_template('compare_result.html', cars_list=result)
+    (min, max) = getMinMax(result)
+    return render_template('compare_result.html', cars_list=result, min=min, max=max)
 
 
 if __name__ == '__main__':
