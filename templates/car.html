@@ -34,7 +34,7 @@
 </table>
 <button class="btn btn btn-secondary" id="edit-car">Edit this vehicle</button>
 <button class="btn btn btn-secondary" id="hide-edition" hidden="true">Hide edition</button>
-<form class="multi-range-field my-5 pb-5" id="edit-car-form" action="/edit_car" method="post" hidden="true">
+<form class="my-5 pb-5" id="edit-car-form" action="/edit_car" method="post" hidden="true">
     <input type="hidden" name="car_id_update" id="car_id_update" value="{{ car.key.id }}">
     <div class="form-row">
         <div class="form-group col-md-6">
@@ -96,7 +96,7 @@
         <button type="submit" class="btn btn btn-secondary">Update this vehicle</button>
     </div>
 </form>
-<form class="multi-range-field my-5 pb-5" id="delete-car-form" action="/delete_car" method="post">
+<form class="my-5 pb-5" id="delete-car-form" action="/delete_car" method="post">
     <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.id }}">
     <button type="submit" class="btn btn btn-secondary">Delete this vehicle</button>
 </form>

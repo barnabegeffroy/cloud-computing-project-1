@@ -1,36 +1,21 @@
 {% extends "layout.html" %}
-{% set active_page = "nav_find" %}
+{% set active_page = "nav_compare" %}
 {% block title %}Compare cars{% endblock %}
 {% block h1 %}Select vehicles you want to compare{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
 {% if true %}
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Manufacturer</th>
-            <th scope="col">Year</th>
-            <th scope="col">Battery size (Kwh)</th>
-            <th scope="col">WLTP range (Km)</th>
-            <th scope="col">Cost</th>
-            <th scope="col">Power (Kw)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for car in cars_list %}
-        <tr>
-            <th scope="row">{{ car['name'] }}</th>
-            <td>{{ car['manufacturer'] }}</td>
-            <td>{{ car['year'] }}</td>
-            <td>{{ car['battery'] }}</td>
-            <td>{{ car['wltp'] }}</td>
-            <td>{{ car['cost'] }}</td>
-            <td>{{ car['power'] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<form action="/compare_result" method="post">
+    {% for car in cars_list %}
+    <div class="form-check">
+        <label class="form-check-label">
+            <input type="checkbox" value="{{ car.key.id }}" class="form-check-input" name="car-item">
+            {{ car['name'] }} - {{ car['manufacturer'] }} - {{ car['year'] }}
+        </label>
+    </div>
+    {% endfor %}
+    <input type="submit" value="Compare these vehicles">
+</form>
 {% else %}
 <p class="lead">No vehicles yet.</p>
 <p class="lead">

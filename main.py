@@ -1,3 +1,5 @@
+import json
+from unittest import result
 import google.oauth2.id_token
 from flask import Flask, render_template, request, redirect, url_for
 from google.auth.transport import requests
@@ -64,7 +66,7 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
     return id
 
 
-@ app.route('/put_car', methods=['POST'])
+@app.route('/put_car', methods=['POST'])
 def putCar():
     id_token = request.cookies.get("token")
     message = None
@@ -89,7 +91,7 @@ def putCar():
     return redirect(url_for('.addCar', message=message, status=status))
 
 
-@ app.route('/search_cars', methods=['GET'])
+@app.route('/search_cars', methods=['GET'])
 def searchCars():
     result = None
     query = datastore_client.query(kind='Vehicles')
@@ -135,15 +137,15 @@ def searchCars():
     return render_template('result.html', cars_list=result)
 
 
-def findCar(id):
+def findCarById(id):
     entity_key = datastore_client.key('Vehicles', id)
     entity = datastore_client.get(entity_key)
     return entity
 
 
-@ app.route('/car_info/<int:id>', methods=['GET'])
+@app.route('/car_info/<int:id>', methods=['GET'])
 def carInfo(id):
-    car = findCar(id)
+    car = findCarById(id)
     if car:
         return render_template('car.html', car=car, message=request.args.get('message'), status=request.args.get('status'))
     else:
@@ -155,7 +157,7 @@ def deleteCarsById(id):
     datastore_client.delete(entity_key)
 
 
-@ app.route('/delete_car', methods=['POST'])
+@app.route('/delete_car', methods=['POST'])
 def deleteCar():
     id_token = request.cookies.get("token")
     message = None
@@ -188,7 +190,7 @@ def updateCarInfo(id, new_name, new_manufacturer, new_year, new_battery, new_wlt
     datastore_client.put(entity)
 
 
-@ app.route('/edit_car', methods=['POST'])
+@app.route('/edit_car', methods=['POST'])
 def editCar():
     id_token = request.cookies.get("token")
     message = None
@@ -218,12 +220,29 @@ def editCar():
     return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
 
 
-@ app.route('/compare')
+@app.route('/compare', methods=['GET'])
 def compare():
     result = None
     query = datastore_client.query(kind='Vehicles')
     result = query.fetch()
-    return render_template('compare.html', cars_list=result)
+    return render_template('compare.html', cars_list=result, message=request.args.get('message'), status=request.args.get('status'))
+
+
+def findCarsByIdList(list):
+    entity_key_list = []
+    for id in list:
+        entity_key = datastore_client.key('Vehicles', int(id))
+        entity_key_list.append(entity_key)
+    return datastore_client.get_multi(entity_key_list)
+
+
+@app.route('/compare_result', methods=['POST'])
+def compareResult():
+    id_list = request.form.getlist('car-item')
+    if len(id_list) < 2:
+        return redirect(url_for('.compare', message="You must select at least 2 vehicles to compare them", status="error"))
+    result = findCarsByIdList(id_list)
+    return render_template('compare_result.html', cars_list=result)
 
 
 if __name__ == '__main__':
