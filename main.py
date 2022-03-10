@@ -63,6 +63,7 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
         'power': power,
     })
     datastore_client.put(entity)
+    updateAverage()
     return id
 
 
@@ -133,7 +134,6 @@ def searchCars():
         query.add_filter('power', '<=', request.args.get('max_power'))
 
     result = query.fetch()
-
     return render_template('result.html', cars_list=result)
 
 
@@ -146,8 +146,9 @@ def findCarById(id):
 @app.route('/car_info/<int:id>', methods=['GET'])
 def carInfo(id):
     car = findCarById(id)
+    average = getAverage()
     if car:
-        return render_template('car.html', car=car, message=request.args.get('message'), status=request.args.get('status'))
+        return render_template('car.html', car=car, average=average, message=request.args.get('message'), status=request.args.get('status'))
     else:
         return redirect(url_for('.root', message="This car does not exist", status="error"))
 
@@ -281,8 +282,48 @@ def compareResult():
     if len(id_list) < 2:
         return redirect(url_for('.compare', message="You must select at least 2 vehicles to compare them", status="error"))
     result = findCarsByIdList(id_list)
+    average = getAverage()
+    result.append(average)
     (min, max) = getMinMax(result)
-    return render_template('compare_result.html', cars_list=result, min=min, max=max)
+    print(max)
+    result.pop()
+    return render_template('compare_result.html', cars_list=result, average=average, min=min, max=max)
+
+
+def updateAverage():
+    query = datastore_client.query(kind='Vehicles')
+    all_cars = query.fetch()
+    size = 0.
+    total_year = 0.
+    total_battery = 0.
+    total_wltp = 0.
+    total_cost = 0.
+    total_power = 0.
+    for car in all_cars:
+        size += 1
+        total_year += float(car['year'])
+        total_battery += float(car['battery'])
+        total_wltp += float(car['wltp'])
+        total_cost += float(car['cost'])
+        total_power += float(car['power'])
+
+    entity_key = datastore_client.key('Average', 'data')
+    entity = datastore.Entity(entity_key)
+    entity.update({
+        'size': size,
+        'year': str(int(total_year / size)),
+        'battery': str(int(total_battery / size)),
+        'wltp': str(int(total_wltp / size)),
+        'cost': str(int(total_cost / size)),
+        'power': str(int(total_power / size)),
+    })
+    datastore_client.put(entity)
+
+
+def getAverage():
+    entity_key = datastore_client.key('Average', 'data')
+    entity = datastore_client.get(entity_key)
+    return entity
 
 
 if __name__ == '__main__':
