@@ -67,7 +67,6 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
         'average': 0.
     })
     datastore_client.put(entity)
-    updateAverage()
     return id
 
 
@@ -152,10 +151,9 @@ def findCarById(id):
 @app.route('/car_info/<int:id>', methods=['GET'])
 def carInfo(id):
     car = findCarById(id)
-    average = getAverage()
     if car:
         reviews = getReviews(id)
-        return render_template('car.html', car=car, average=average, reviews=reviews, message=request.args.get('message'), status=request.args.get('status'))
+        return render_template('car.html', car=car, reviews=reviews, message=request.args.get('message'), status=request.args.get('status'))
     else:
         return redirect(url_for('.root', message="This car does not exist", status="error"))
 
@@ -293,48 +291,10 @@ def compareResult():
     if len(id_list) < 2:
         return redirect(url_for('.compare', message="You must select at least 2 Vehicle to compare them", status="error"))
     result = findCarsByIdList(id_list)
-    average = getAverage()
-    result.append(average)
     (min, max) = getMinMax(result)
     print(max)
     result.pop()
-    return render_template('compare_result.html', cars_list=result, average=average, min=min, max=max)
-
-
-def updateAverage():
-    query = datastore_client.query(kind='Vehicle')
-    all_cars = query.fetch()
-    size = 0
-    total_year = 0
-    total_battery = 0
-    total_wltp = 0
-    total_cost = 0
-    total_power = 0
-    for car in all_cars:
-        size += 1
-        total_year += car['year']
-        total_battery += car['battery']
-        total_wltp += car['wltp']
-        total_cost += car['cost']
-        total_power += car['power']
-
-    entity_key = datastore_client.key('Average', 'data')
-    entity = datastore.Entity(entity_key)
-    entity.update({
-        'size': size,
-        'year': total_year / size,
-        'battery': total_battery / size,
-        'wltp': total_wltp / size,
-        'cost': total_cost / size,
-        'power': total_power / size,
-    })
-    datastore_client.put(entity)
-
-
-def getAverage():
-    entity_key = datastore_client.key('Average', 'data')
-    entity = datastore_client.get(entity_key)
-    return entity
+    return render_template('compare_result.html', cars_list=result, min=min, max=max)
 
 
 def createReview(car_id, text, rate, dt, name):

@@ -36,32 +36,11 @@
             <td
                 class="{{ 'bg-success' if car['power'] == max['power'] else 'bg-danger' if car['power'] == min['power'] else 'bg-secondary'}}">
                 {{ car['power'] }}</td>
+            <td
+                class="{{ 'bg-success' if car['average'] == max['average'] else 'bg-danger' if car['average'] == min['average'] else 'bg-secondary'}}">
+                {{ car['power'] }}</td>
         </tr>
         {% endfor %}
-    </tbody>
-    <tbody>
-        <tr>
-            <th></th>
-        </tr>
-    </tbody>
-    <tbody>
-        <tr>
-            <th scope="row"> Average</th>
-            <td> - </td>
-            <td
-                class="{{ 'bg-success' if average['year'] == max['year'] else 'bg-danger' if average['year'] == min['year'] else 'bg-secondary'}}">
-                {{ average['year'] }}</td>
-            <td class=" {{ 'bg-success' if average['battery']==max['battery'] else 'bg-danger' if
-                average['battery']==min['battery'] else 'bg-secondary' }}">{{ average['battery'] }}</td>
-            <td
-                class="{{ 'bg-success' if average['wltp'] == max['wltp'] else 'bg-danger' if average['wltp'] == min['wltp'] else 'bg-secondary'}}">
-                {{ average['wltp'] }}</td>
-            <td class=" {{ 'bg-success' if average['cost']==min['cost'] else 'bg-danger' if average['cost']==max['cost']
-                else 'bg-secondary' }}">{{ average['cost'] }}</td>
-            <td
-                class="{{ 'bg-success' if average['power'] == max['power'] else 'bg-danger' if average['power'] == min['power'] else 'bg-secondary'}}">
-                {{ average['power'] }}</td>
-        </tr>
     </tbody>
 </table>
 {% endblock %}
