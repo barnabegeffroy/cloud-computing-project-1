@@ -23,6 +23,7 @@ window.addEventListener('load', function () {
                 document.getElementById('hide-edition').hidden = true;
             }
         } else {
+            document.getElementById('show-add-review').hidden = true;
             document.getElementById('edit-car').hidden = true;
             document.getElementById('delete-car-form').hidden = true;
         }
