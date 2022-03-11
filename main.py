@@ -142,7 +142,7 @@ def searchCars():
         if request.args.get('max_power') != '':
             query.add_filter('power', '<=', int(request.args.get('max_power')))
 
-        result = query.fetch()
+        result = list(query.fetch())
     except ValueError as exc:
         message = str(exc)
         status = "error"
@@ -249,7 +249,7 @@ def compare():
     status = request.args.get('status')
     try:
         query = datastore_client.query(kind='Vehicle')
-        result = query.fetch()
+        result = list(query.fetch())
     except ValueError as exc:
         message = str(exc)
         status = "error"
