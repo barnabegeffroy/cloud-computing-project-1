@@ -61,8 +61,8 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
         'cost': cost,
         'power': power,
         'list_reviews': [],
-        'tot_rate': 0,
-        'average': 0.
+        'tot_rating': 0,
+        'average': None
     })
     datastore_client.put(entity)
     return id
@@ -326,14 +326,14 @@ def compareResult():
     return render_template('compare_result.html', cars_list=result, min=min, max=max, message=message, status=status)
 
 
-def createReview(car_id, text, rate, dt, name):
+def createReview(car_id, text, rating, dt, name):
     entity_key = datastore_client.key('Vehicle', car_id)
     car_entity = datastore_client.get(key=entity_key)
     if car_entity:
         review_entity = datastore.Entity()
         review_entity.update({
             'text': text,
-            'rate': rate,
+            'rating': rating,
             'timestamp': dt,
             'name': name
         })
@@ -342,8 +342,8 @@ def createReview(car_id, text, rate, dt, name):
         new_reviews_list.append(review_entity)
         car_entity.update({
             'list_reviews': new_reviews_list,
-            'tot_rate': car_entity['tot_rate']+rate,
-            'average': (car_entity['tot_rate']+rate)/(len(new_reviews_list))
+            'tot_rating': car_entity['tot_rating']+rating,
+            'average': (car_entity['tot_rating']+rating)/(len(new_reviews_list))
         })
         datastore_client.put(car_entity)
         return True
@@ -361,7 +361,7 @@ def addReview():
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
-            if createReview(car_id, request.form['text_review'], int(request.form['rate_review']), datetime.datetime.now(), claims['name']):
+            if createReview(car_id, request.form['text_review'], int(request.form['rating_review']), datetime.datetime.now(), claims['name']):
                 message = "Review has been added !"
                 status = "success"
             else:

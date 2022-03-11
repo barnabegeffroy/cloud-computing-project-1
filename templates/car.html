@@ -18,7 +18,7 @@
             <th scope="col">WLTP range (Km)</th>
             <th scope="col">Cost</th>
             <th scope="col">Power (Kw)</th>
-            <th scope="col">Average rate (/10)</th>
+            <th scope="col">Average rating (/10)</th>
         </tr>
     </thead>
     <tbody>
@@ -107,8 +107,9 @@
 <form class="my-5 pb-5" id="add-review-form" action="/add_review" method="post" hidden="true">
     <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
     <div class="form-group">
-        <label for="rate_review">Rate this vehicle</label>
-        <input type="range" name="rate_review" id="rate_review" class="form-control-range" min="0" max="10" required>
+        <label for="rating_review">Rate this vehicle</label>
+        <input type="range" name="rating_review" id="rating_review" class="form-control-range" min="0" max="10"
+            required>
     </div>
     <div class="form-group">
         <label for="text_review">Your review</label>
@@ -125,7 +126,7 @@
 <div class="mb-8 bg-light text-justify">
     <div class="row text-muted">
         <h5 class="col">{{ review['name'] }}</h5>
-        <span class="col">Rate : {{ review['rate'] }}/10</span>
+        <span class="col">Rate : {{ review['rating'] }}/10</span>
         <span class="col-md-3 align-right">{{ review['timestamp'].strftime('at %H:%M on %Y-%m-%d') }}</span>
     </div>
     <p class="bg-secondary">

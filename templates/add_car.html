@@ -9,11 +9,13 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="The name of the vehicle">
+            <input type="text" class="form-control" id="name" name="name" placeholder="The name of the vehicle"
+                required>
         </div>
         <div class="form-group col-md-6">
             <label for="manufacturer">Manufacturer</label>
-            <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Manufacturer">
+            <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Manufacturer"
+                required>
         </div>
     </div>
     <div class="form-row">
@@ -21,32 +23,33 @@
             <div class="form-group ">
                 <label class="control-label" for="year">Year:</label>
                 <input class="form-control" id="year" name="year" type="number" min="1900" max="2022" step="1"
-                    value="2022" />
+                    value="2022" required />
             </div>
         </div>
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label" for="battery">Battery size in Kwh:</label>
-                <input class="form-control" id="battery" name="battery" type="number" min="0" step="1" value="0" />
+                <input class="form-control" id="battery" name="battery" type="number" min="0" step="1" value="0"
+                    required />
             </div>
         </div>
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label" for="wltp">WLTP range in Km:</label>
-                <input class="form-control" id="wltp" name="wltp" type="number" min="0" step="1" value="0" />
+                <input class="form-control" id="wltp" name="wltp" type="number" min="0" step="1" value="0" required />
             </div>
         </div>
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label" for="cost">Cost in €:</label>
-                <input class="form-control" id="cost" name="cost" type="number" min="0" step="1" value="0" />
+                <input class="form-control" id="cost" name="cost" type="number" min="0" step="1" value="0" required />
             </div>
 
         </div>
         <div class="col">
             <div class="form-group ">
                 <label class="control-label" for="power">Power in Kw:</label>
-                <input class="form-control" id="power" name="power" type="number" min="0" step="1" value="0" />
+                <input class="form-control" id="power" name="power" type="number" min="0" step="1" value="0" required />
             </div>
         </div>
     </div>
