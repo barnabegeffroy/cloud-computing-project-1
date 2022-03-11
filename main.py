@@ -151,7 +151,8 @@ def carInfo(id):
     car = findCarById(id)
     average = getAverage()
     if car:
-        return render_template('car.html', car=car, average=average, message=request.args.get('message'), status=request.args.get('status'))
+        reviews = getReviews(id)
+        return render_template('car.html', car=car, average=average, reviews=reviews, message=request.args.get('message'), status=request.args.get('status'))
     else:
         return redirect(url_for('.root', message="This car does not exist", status="error"))
 
@@ -337,7 +338,6 @@ def createReview(car_id, text, rate, dt, name):
         'name': name
     })
     datastore_client.put(entity)
-    print("-------------------------------------")
 
 
 @app.route('/add_review', methods=['POST'])
@@ -364,9 +364,10 @@ def addReview():
 
 
 def getReviews(car_id):
-    ancestor_key = datastore_client.key('Vehicle', id)
+    ancestor_key = datastore_client.key('Vehicle', car_id)
     query = datastore_client.query(kind='Review', ancestor=ancestor_key)
-    reviews = query.order = ['-timestamp']
+    query.order = ['-timestamp']
+    reviews = query.fetch()
     return reviews
 
 

@@ -49,23 +49,6 @@
         </tr>
     </tbody>
 </table>
-<button class="btn btn btn-secondary" id="show-add-review">Add a review for this vehicle</button>
-<button class="btn btn btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
-<form class="my-5 pb-5" id="add-review-form" action="/add_review" method="post" hidden="true">
-    <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
-    <div class="form-group">
-        <label for="rate_review">Rate this vehicle</label>
-        <input type="range" name="rate_review" id="rate_review" class="form-control-range" min="0" max="10" required>
-    </div>
-    <div class="form-group">
-        <label for="text_review">Your review</label>
-        <textarea name="text_review" id="text_review" cols="3" class="form-control" maxlength="1000" required>
-        </textarea>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn btn-secondary">Add your review</button>
-    </div>
-</form>
 <button class="btn btn btn-secondary" id="edit-car">Edit this vehicle</button>
 <button class="btn btn btn-secondary" id="hide-edition" hidden="true">Hide edition</button>
 <form class="my-5 pb-5" id="edit-car-form" action="/edit_car" method="post" hidden="true">
@@ -130,8 +113,32 @@
         <button type="submit" class="btn btn btn-secondary">Update this vehicle</button>
     </div>
 </form>
-<form class="my-5 pb-5" id="delete-car-form" action="/delete_car" method="post">
+<form class="my-2 pb-2" id="delete-car-form" action="/delete_car" method="post">
     <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.id }}">
     <button type="submit" class="btn btn btn-secondary">Delete this vehicle</button>
 </form>
+<button class="btn btn btn-secondary" id="show-add-review">Add a review for this vehicle</button>
+<button class="btn btn btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
+<form class="my-5 pb-5" id="add-review-form" action="/add_review" method="post" hidden="true">
+    <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
+    <div class="form-group">
+        <label for="rate_review">Rate this vehicle</label>
+        <input type="range" name="rate_review" id="rate_review" class="form-control-range" min="0" max="10" required>
+    </div>
+    <div class="form-group">
+        <label for="text_review">Your review</label>
+        <textarea name="text_review" id="text_review" cols="3" class="form-control" maxlength="1000" required>
+        </textarea>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn btn-secondary">Add your review</button>
+    </div>
+</form>
+<h2 class="mt-5">All reviews</h2>
+{% for review in reviews %}
+{{ review['text'] }}
+{{ review['rate'] }}
+{{ review['name'] }}
+{{ review['timestamp'] }}
+{% endfor %}
 {% endblock %}
