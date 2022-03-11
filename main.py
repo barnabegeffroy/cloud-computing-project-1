@@ -104,7 +104,7 @@ def searchCars():
     if request.args.get('manufacturer') != '':
         query.add_filter('manufacturer', '=', request.args.get('manufacturer'))
 
-    if request.args.get('min_year' != ''):
+    if request.args.get('min_year') != '':
         query.add_filter('year', '>=', int(request.args.get('min_year')))
 
     if request.args.get('max_year') != '':
