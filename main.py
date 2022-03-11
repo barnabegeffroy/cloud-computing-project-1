@@ -62,6 +62,9 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
         'wltp': wltp,
         'cost': cost,
         'power': power,
+        'num_reviews': 0,
+        'tot_rate': 0,
+        'average': 0.
     })
     datastore_client.put(entity)
     updateAverage()
@@ -247,7 +250,8 @@ def getMinMax(list):
         "battery": list[0]['battery'],
         "wltp": list[0]['wltp'],
         "cost": list[0]['cost'],
-        "power": list[0]['power']
+        "power": list[0]['power'],
+        "average": list[0]['average']
     }
     max = min.copy()
     for car in list:
@@ -275,6 +279,11 @@ def getMinMax(list):
             max['power'] = car['power']
         if car['power'] < min['power']:
             min['power'] = car['power']
+
+        if car['average'] > max['average']:
+            max['average'] = car['average']
+        if car['average'] < min['average']:
+            min['average'] = car['average']
     return (min, max)
 
 
@@ -336,6 +345,14 @@ def createReview(car_id, text, rate, dt, name):
         'rate': rate,
         'timestamp': dt,
         'name': name
+    })
+    datastore_client.put(entity)
+    entity_key = datastore_client.key('Vehicle', id)
+    entity = datastore.Entity(key=entity_key)
+    entity.update({
+        'num_reviews': entity['num_reviews']+1,
+        'tot_rate': entity['tot_rate']+rate,
+        'average': (entity['tot_rate']+rate)/(entity['num_reviews']+1)
     })
     datastore_client.put(entity)
 
