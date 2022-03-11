@@ -98,46 +98,56 @@ def putCar():
 @app.route('/search_cars', methods=['GET'])
 def searchCars():
     result = None
-    query = datastore_client.query(kind='Vehicle')
+    message = None
+    status = None
+    try:
+        query = datastore_client.query(kind='Vehicle')
 
-    if request.args.get('name') != '':
-        query.add_filter('name', '=', request.args.get('name'))
+        if request.args.get('name') != '':
+            query.add_filter('name', '=', request.args.get('name'))
 
-    if request.args.get('manufacturer') != '':
-        query.add_filter('manufacturer', '=', request.args.get('manufacturer'))
+        if request.args.get('manufacturer') != '':
+            query.add_filter('manufacturer', '=',
+                             request.args.get('manufacturer'))
 
-    if request.args.get('min_year') != '':
-        query.add_filter('year', '>=', int(request.args.get('min_year')))
+        if request.args.get('min_year') != '':
+            query.add_filter('year', '>=', int(request.args.get('min_year')))
 
-    if request.args.get('max_year') != '':
-        query.add_filter('year', '<=', int(request.args.get('max_year')))
+        if request.args.get('max_year') != '':
+            query.add_filter('year', '<=', int(request.args.get('max_year')))
 
-    if request.args.get('min_battery') != '':
-        query.add_filter('battery', '>=', int(request.args.get('min_battery')))
+        if request.args.get('min_battery') != '':
+            query.add_filter('battery', '>=', int(
+                request.args.get('min_battery')))
 
-    if request.args.get('max_battery') != '':
-        query.add_filter('battery', '<=', int(request.args.get('max_battery')))
+        if request.args.get('max_battery') != '':
+            query.add_filter('battery', '<=', int(
+                request.args.get('max_battery')))
 
-    if request.args.get('min_wltp') != '':
-        query.add_filter('wltp', '>=', int(request.args.get('min_wltp')))
+        if request.args.get('min_wltp') != '':
+            query.add_filter('wltp', '>=', int(request.args.get('min_wltp')))
 
-    if request.args.get('max_wltp') != '':
-        query.add_filter('wltp', '<=', int(request.args.get('max_wltp')))
+        if request.args.get('max_wltp') != '':
+            query.add_filter('wltp', '<=', int(request.args.get('max_wltp')))
 
-    if request.args.get('min_cost') != '':
-        query.add_filter('cost', '>=', int(request.args.get('min_cost')))
+        if request.args.get('min_cost') != '':
+            query.add_filter('cost', '>=', int(request.args.get('min_cost')))
 
-    if request.args.get('max_cost') != '':
-        query.add_filter('cost', '<=', request.args.get('max_cost'))
+        if request.args.get('max_cost') != '':
+            query.add_filter('cost', '<=', request.args.get('max_cost'))
 
-    if request.args.get('min_power') != '':
-        query.add_filter('power', '>=', int(request.args.get('min_power')))
+        if request.args.get('min_power') != '':
+            query.add_filter('power', '>=', int(request.args.get('min_power')))
 
-    if request.args.get('max_power') != '':
-        query.add_filter('power', '<=', int(request.args.get('max_power')))
+        if request.args.get('max_power') != '':
+            query.add_filter('power', '<=', int(request.args.get('max_power')))
 
-    result = query.fetch()
-    return render_template('result.html', cars_list=result)
+        result = query.fetch()
+    except ValueError as exc:
+        message = str(exc)
+        status = "error"
+
+    return render_template('result.html', cars_list=result, message=message, status=status)
 
 
 def findCarById(id):
@@ -148,7 +158,11 @@ def findCarById(id):
 
 @app.route('/car_info/<int:id>', methods=['GET'])
 def carInfo(id):
-    car = findCarById(id)
+    car = None
+    try:
+        car = findCarById(id)
+    except ValueError as exc:
+        return redirect(url_for('.root', message=str(exc), status="error"))
     if car:
         return render_template('car.html', car=car, message=request.args.get('message'), status=request.args.get('status'))
     else:
@@ -156,16 +170,6 @@ def carInfo(id):
 
 
 def deleteCarsById(id):
-    ancestor_key = datastore_client.key('Vehicle', id)
-    query = datastore_client.query(kind='Review', ancestor=ancestor_key)
-    reviews = query.fetch()
-    batch = datastore_client.batch()
-    batch.begin()
-    for review in reviews:
-        id = review.key.id
-        batch.delete(datastore_client.key(
-            'Review', datastore_client.key('Review', id)))
-    batch.commit()
     entity_key = datastore_client.key('Vehicle', id)
     datastore_client.delete(entity_key)
 
@@ -211,23 +215,27 @@ def editCar():
     status = None
     car_id = int(request.form['car_id_update'])
     if id_token:
-        if request.form['new_name'] == request.form['current_name'] and request.form['new_manufacturer'] == request.form['current_manufacturer'] and request.form['new_year'] == request.form['current_year']:
-            updateCarInfo(car_id, request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
-                          request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
-            message = "Vehicle has been updated !"
-            status = "success"
-
-        else:
-            new_car_id = createCar(request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
-                                   request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
-            if car_id:
-                deleteCarsById(car_id)
-                car_id = new_car_id
+        try:
+            if request.form['new_name'] == request.form['current_name'] and request.form['new_manufacturer'] == request.form['current_manufacturer'] and request.form['new_year'] == request.form['current_year']:
+                updateCarInfo(car_id, request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
+                              request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
                 message = "Vehicle has been updated !"
                 status = "success"
+
             else:
-                message = "The information you wish to add corresponds to an existing vehicle"
-                status = "error"
+                new_car_id = createCar(request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
+                                       request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
+                if car_id:
+                    deleteCarsById(car_id)
+                    car_id = new_car_id
+                    message = "Vehicle has been updated !"
+                    status = "success"
+                else:
+                    message = "The information you wish to add corresponds to an existing vehicle"
+                    status = "error"
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
     else:
         message = "You must log in to update a vehicle"
         status = "error"
@@ -237,9 +245,15 @@ def editCar():
 @app.route('/compare', methods=['GET'])
 def compare():
     result = None
-    query = datastore_client.query(kind='Vehicle')
-    result = query.fetch()
-    return render_template('compare.html', cars_list=result, message=request.args.get('message'), status=request.args.get('status'))
+    message = request.args.get('message')
+    status = request.args.get('status')
+    try:
+        query = datastore_client.query(kind='Vehicle')
+        result = query.fetch()
+    except ValueError as exc:
+        message = str(exc)
+        status = "error"
+    return render_template('compare.html', cars_list=result, message=message, status=status)
 
 
 def findCarsByIdList(list):
@@ -298,9 +312,18 @@ def compareResult():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
         return redirect(url_for('.compare', message="You must select at least 2 Vehicle to compare them", status="error"))
-    result = findCarsByIdList(id_list)
-    (min, max) = getMinMax(result)
-    return render_template('compare_result.html', cars_list=result, min=min, max=max)
+    result = None
+    min = None
+    max = None
+    message = None
+    status = None
+    try:
+        result = findCarsByIdList(id_list)
+        (min, max) = getMinMax(result)
+    except ValueError as exc:
+        message = str(exc)
+        status = "error"
+    return render_template('compare_result.html', cars_list=result, min=min, max=max, message=message, status=status)
 
 
 def createReview(car_id, text, rate, dt, name):
@@ -338,10 +361,12 @@ def addReview():
         try:
             claims = google.oauth2.id_token.verify_firebase_token(
                 id_token, firebase_request_adapter)
-            createReview(car_id, request.form['text_review'], int(
-                request.form['rate_review']), datetime.datetime.now(), claims['name'])
-            message = "Review has been added !"
-            status = "success"
+            if createReview(car_id, request.form['text_review'], int(request.form['rate_review']), datetime.datetime.now(), claims['name']):
+                message = "Review has been added !"
+                status = "success"
+            else:
+                message = "The database can't find the vehicle for the review"
+                status = "error"
         except ValueError as exc:
             message = str(exc)
             status = "error"
