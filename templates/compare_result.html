@@ -14,6 +14,7 @@
             <th scope="col">WLTP range (Km)</th>
             <th scope="col">Cost</th>
             <th scope="col">Power (Kw)</th>
+            <th scope="col">Average rate (/10)</th>
         </tr>
     </thead>
     <tbody>
@@ -38,7 +39,7 @@
                 {{ car['power'] }}</td>
             <td
                 class="{{ 'bg-success' if car['average'] == max['average'] else 'bg-danger' if car['average'] == min['average'] else 'bg-secondary'}}">
-                {{ car['power'] }}</td>
+                {{ car['average'] }}</td>
         </tr>
         {% endfor %}
     </tbody>
