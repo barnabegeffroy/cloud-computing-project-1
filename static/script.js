@@ -1,7 +1,7 @@
 window.addEventListener('load', function () {
     document.getElementById('sign-out').onclick = function () {
         firebase.auth().signOut();
-        document.cookie = "token=";
+        document.cookie = "token=" + ";path=/";
     }
 
     firebase.auth().onAuthStateChanged(function (user) {
