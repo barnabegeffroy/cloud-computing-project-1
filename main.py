@@ -1,6 +1,4 @@
 import datetime
-import json
-from unittest import result
 import google.oauth2.id_token
 from flask import Flask, render_template, request, redirect, url_for
 from google.auth.transport import requests
@@ -62,7 +60,7 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
         'wltp': wltp,
         'cost': cost,
         'power': power,
-        'num_reviews': 0,
+        'list_reviews': [],
         'tot_rate': 0,
         'average': 0.
     })
@@ -152,13 +150,22 @@ def findCarById(id):
 def carInfo(id):
     car = findCarById(id)
     if car:
-        reviews = getReviews(id)
-        return render_template('car.html', car=car, reviews=reviews, message=request.args.get('message'), status=request.args.get('status'))
+        return render_template('car.html', car=car, message=request.args.get('message'), status=request.args.get('status'))
     else:
         return redirect(url_for('.root', message="This car does not exist", status="error"))
 
 
 def deleteCarsById(id):
+    ancestor_key = datastore_client.key('Vehicle', id)
+    query = datastore_client.query(kind='Review', ancestor=ancestor_key)
+    reviews = query.fetch()
+    batch = datastore_client.batch()
+    batch.begin()
+    for review in reviews:
+        id = review.key.id
+        batch.delete(datastore_client.key(
+            'Review', datastore_client.key('Review', id)))
+    batch.commit()
     entity_key = datastore_client.key('Vehicle', id)
     datastore_client.delete(entity_key)
 
@@ -174,7 +181,8 @@ def deleteCar():
             message = "Vehicle has been deleted !"
             status = "success"
         except ValueError as exc:
-            error_message = str(exc)
+            message = str(exc)
+            status = "error"
     else:
         message = "You must log in to delete a vehicle"
         status = "error"
@@ -226,7 +234,7 @@ def editCar():
     return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
 
 
-@ app.route('/compare', methods=['GET'])
+@app.route('/compare', methods=['GET'])
 def compare():
     result = None
     query = datastore_client.query(kind='Vehicle')
@@ -285,36 +293,39 @@ def getMinMax(list):
     return (min, max)
 
 
-@ app.route('/compare_result', methods=['POST'])
+@app.route('/compare_result', methods=['POST'])
 def compareResult():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
         return redirect(url_for('.compare', message="You must select at least 2 Vehicle to compare them", status="error"))
     result = findCarsByIdList(id_list)
     (min, max) = getMinMax(result)
-    print(max)
-    result.pop()
     return render_template('compare_result.html', cars_list=result, min=min, max=max)
 
 
 def createReview(car_id, text, rate, dt, name):
-    entity_key = datastore_client.key('Vehicle', car_id, 'Review')
-    entity = datastore.Entity(entity_key)
-    entity.update({
-        'text': text,
-        'rate': rate,
-        'timestamp': dt,
-        'name': name
-    })
-    datastore_client.put(entity)
-    entity_key = datastore_client.key('Vehicle', id)
-    entity = datastore.Entity(key=entity_key)
-    entity.update({
-        'num_reviews': entity['num_reviews']+1,
-        'tot_rate': entity['tot_rate']+rate,
-        'average': (entity['tot_rate']+rate)/(entity['num_reviews']+1)
-    })
-    datastore_client.put(entity)
+    entity_key = datastore_client.key('Vehicle', car_id)
+    car_entity = datastore_client.get(key=entity_key)
+    if car_entity:
+        review_entity = datastore.Entity()
+        review_entity.update({
+            'text': text,
+            'rate': rate,
+            'timestamp': dt,
+            'name': name
+        })
+        print(review_entity)
+        new_reviews_list = car_entity['list_reviews']
+        new_reviews_list.append(review_entity)
+        car_entity.update({
+            'list_reviews': new_reviews_list,
+            'tot_rate': car_entity['tot_rate']+rate,
+            'average': (car_entity['tot_rate']+rate)/(len(new_reviews_list))
+        })
+        datastore_client.put(car_entity)
+        return True
+    else:
+        return False
 
 
 @app.route('/add_review', methods=['POST'])
@@ -338,14 +349,6 @@ def addReview():
         message = "You must log in to update a vehicle"
         status = "error"
     return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
-
-
-def getReviews(car_id):
-    ancestor_key = datastore_client.key('Vehicle', car_id)
-    query = datastore_client.query(kind='Review', ancestor=ancestor_key)
-    query.order = ['-timestamp']
-    reviews = query.fetch()
-    return reviews
 
 
 if __name__ == '__main__':
