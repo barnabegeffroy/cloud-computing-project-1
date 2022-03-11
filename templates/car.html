@@ -120,10 +120,17 @@
     </div>
 </form>
 <h2 class="mt-5">All reviews</h2>
+
 {% for review in car['list_reviews'] %}
-{{ review['text'] }}
-{{ review['rate'] }}
-{{ review['name'] }}
-{{ review['timestamp'] }}
+<div class="mb-8 bg-light text-justify">
+    <div class="row text-muted">
+        <h5 class="col">{{ review['name'] }}</h5>
+        <span class="col">Rate : {{ review['rate'] }}/10</span>
+        <span class="col-md-3 align-right">{{ review['timestamp'].strftime('at %H:%M on %Y-%m-%d') }}</span>
+    </div>
+    <p class="bg-secondary">
+        {{ review['text'] }}
+    </p>
+</div>
 {% endfor %}
 {% endblock %}
