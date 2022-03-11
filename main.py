@@ -47,7 +47,7 @@ def addCar():
 
 
 def createCar(name, manufacturer, year, battery, wltp, cost, power):
-    id = abs(hash(name + manufacturer + year))
+    id = abs(hash(name + manufacturer + str(year)))
     entity_key = datastore_client.key(
         'Vehicles', id)
     if datastore_client.get(entity_key):
@@ -75,14 +75,15 @@ def putCar():
     if id_token:
         try:
             id = createCar(
-                request.form['name'], request.form['manufacturer'], request.form['year'], request.form['battery'], request.form['wltp'], request.form['cost'], request.form['power'])
-            if id == None:
-                message = "You can't add this vehicle, it already exists !"
-                status = "error"
-            else:
+                request.form['name'], request.form['manufacturer'],
+                int(request.form['year']), int(request.form['battery']), int(request.form['wltp']), int(request.form['cost']), int(request.form['power']))
+            if id:
                 message = "The vehicle has been added succesfully !"
                 status = "success"
                 return redirect(url_for('.carInfo', id=id, message=message, status=status))
+            else:
+                message = "You can't add this vehicle, it already exists !"
+                status = "error"
         except ValueError as exc:
             error_message = str(exc)
     else:
@@ -104,34 +105,34 @@ def searchCars():
         query.add_filter('manufacturer', '=', request.args.get('manufacturer'))
 
     if request.args.get('min_year' != ''):
-        query.add_filter('year', '>=', request.args.get('min_year'))
+        query.add_filter('year', '>=', int(request.args.get('min_year')))
 
     if request.args.get('max_year') != '':
-        query.add_filter('year', '<=', request.args.get('max_year'))
+        query.add_filter('year', '<=', int(request.args.get('max_year')))
 
     if request.args.get('min_battery') != '':
-        query.add_filter('battery', '>=', request.args.get('min_battery'))
+        query.add_filter('battery', '>=', int(request.args.get('min_battery')))
 
     if request.args.get('max_battery') != '':
-        query.add_filter('battery', '<=', request.args.get('max_battery'))
+        query.add_filter('battery', '<=', int(request.args.get('max_battery')))
 
     if request.args.get('min_wltp') != '':
-        query.add_filter('wltp', '>=', request.args.get('min_wltp'))
+        query.add_filter('wltp', '>=', int(request.args.get('min_wltp')))
 
     if request.args.get('max_wltp') != '':
-        query.add_filter('wltp', '<=', request.args.get('max_wltp'))
+        query.add_filter('wltp', '<=', int(request.args.get('max_wltp')))
 
     if request.args.get('min_cost') != '':
-        query.add_filter('cost', '>=', request.args.get('min_cost'))
+        query.add_filter('cost', '>=', int(request.args.get('min_cost')))
 
     if request.args.get('max_cost') != '':
         query.add_filter('cost', '<=', request.args.get('max_cost'))
 
     if request.args.get('min_power') != '':
-        query.add_filter('power', '>=', request.args.get('min_power'))
+        query.add_filter('power', '>=', int(request.args.get('min_power')))
 
     if request.args.get('max_power') != '':
-        query.add_filter('power', '<=', request.args.get('max_power'))
+        query.add_filter('power', '<=', int(request.args.get('max_power')))
 
     result = query.fetch()
     return render_template('result.html', cars_list=result)
@@ -199,14 +200,14 @@ def editCar():
     car_id = int(request.form['car_id_update'])
     if id_token:
         if request.form['new_name'] == request.form['current_name'] and request.form['new_manufacturer'] == request.form['current_manufacturer'] and request.form['new_year'] == request.form['current_year']:
-            updateCarInfo(car_id, request.form['new_name'], request.form['new_manufacturer'], request.form['new_year'],
-                          request.form['new_battery'], request.form['new_wltp'], request.form['new_cost'], request.form['new_power'])
+            updateCarInfo(car_id, request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
+                          request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
             message = "Vehicle has been updated !"
             status = "success"
 
         else:
-            new_car_id = createCar(request.form['new_name'], request.form['new_manufacturer'], request.form['new_year'],
-                                   request.form['new_battery'], request.form['new_wltp'], request.form['new_cost'], request.form['new_power'])
+            new_car_id = createCar(request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
+                                   request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
             if car_id:
                 deleteCarsById(car_id)
                 car_id = new_car_id
@@ -221,7 +222,7 @@ def editCar():
     return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
 
 
-@app.route('/compare', methods=['GET'])
+@ app.route('/compare', methods=['GET'])
 def compare():
     result = None
     query = datastore_client.query(kind='Vehicles')
@@ -239,44 +240,42 @@ def findCarsByIdList(list):
 
 def getMinMax(list):
     min = {
-        "year": int(list[0]['year']),
-        "battery": int(list[0]['battery']),
-        "wltp": int(list[0]['wltp']),
-        "cost": int(list[0]['cost']),
-        "power": int(list[0]['power'])
+        "year": list[0]['year'],
+        "battery": list[0]['battery'],
+        "wltp": list[0]['wltp'],
+        "cost": list[0]['cost'],
+        "power": list[0]['power']
     }
     max = min.copy()
     for car in list:
-        if int(car['year']) > max['year']:
-            max['year'] = int(car['year'])
-        if int(car['year']) < min['year']:
-            min['year'] = int(car['year'])
+        if car['year'] > max['year']:
+            max['year'] = car['year']
+        if car['year'] < min['year']:
+            min['year'] = car['year']
 
-        if int(car['battery']) > max['battery']:
-            max['battery'] = int(car['battery'])
-        if int(car['battery']) < min['battery']:
-            min['battery'] = int(car['battery'])
+        if car['battery'] > max['battery']:
+            max['battery'] = car['battery']
+        if car['battery'] < min['battery']:
+            min['battery'] = car['battery']
 
-        if int(car['wltp']) > max['wltp']:
-            max['wltp'] = int(car['wltp'])
-        if int(car['wltp']) < min['wltp']:
-            min['wltp'] = int(car['wltp'])
+        if car['wltp'] > max['wltp']:
+            max['wltp'] = car['wltp']
+        if car['wltp'] < min['wltp']:
+            min['wltp'] = car['wltp']
 
-        if int(car['cost']) > max['cost']:
-            max['cost'] = int(car['cost'])
-        if int(car['cost']) < min['cost']:
-            min['cost'] = int(car['cost'])
+        if car['cost'] > max['cost']:
+            max['cost'] = car['cost']
+        if car['cost'] < min['cost']:
+            min['cost'] = car['cost']
 
-        if int(car['power']) > max['power']:
-            max['power'] = int(car['power'])
-        if int(car['power']) < min['power']:
-            min['power'] = int(car['power'])
-    str_min = {key: str(value) for key, value in min.items()}
-    str_max = {key: str(value) for key, value in max.items()}
-    return (str_min, str_max)
+        if car['power'] > max['power']:
+            max['power'] = car['power']
+        if car['power'] < min['power']:
+            min['power'] = car['power']
+    return (min, max)
 
 
-@app.route('/compare_result', methods=['POST'])
+@ app.route('/compare_result', methods=['POST'])
 def compareResult():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
@@ -293,29 +292,29 @@ def compareResult():
 def updateAverage():
     query = datastore_client.query(kind='Vehicles')
     all_cars = query.fetch()
-    size = 0.
-    total_year = 0.
-    total_battery = 0.
-    total_wltp = 0.
-    total_cost = 0.
-    total_power = 0.
+    size = 0
+    total_year = 0
+    total_battery = 0
+    total_wltp = 0
+    total_cost = 0
+    total_power = 0
     for car in all_cars:
         size += 1
-        total_year += float(car['year'])
-        total_battery += float(car['battery'])
-        total_wltp += float(car['wltp'])
-        total_cost += float(car['cost'])
-        total_power += float(car['power'])
+        total_year += car['year']
+        total_battery += car['battery']
+        total_wltp += car['wltp']
+        total_cost += car['cost']
+        total_power += car['power']
 
     entity_key = datastore_client.key('Average', 'data')
     entity = datastore.Entity(entity_key)
     entity.update({
         'size': size,
-        'year': str(int(total_year / size)),
-        'battery': str(int(total_battery / size)),
-        'wltp': str(int(total_wltp / size)),
-        'cost': str(int(total_cost / size)),
-        'power': str(int(total_power / size)),
+        'year': total_year / size,
+        'battery': total_battery / size,
+        'wltp': total_wltp / size,
+        'cost': total_cost / size,
+        'power': total_power / size,
     })
     datastore_client.put(entity)
 
