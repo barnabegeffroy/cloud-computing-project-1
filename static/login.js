@@ -11,7 +11,6 @@ window.addEventListener('load', function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             document.getElementById('login-info').hidden = false;
-            console.log('Signed in as ${user.displayName} (${user.email})');
             user.getIdToken().then(function (token) {
                 document.cookie = "token=" + token + ";path=/";
             });

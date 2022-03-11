@@ -7,14 +7,14 @@
 {% if cars_list|length > 0 %}
 <form class="text-justify" action="/compare_result" method="post">
     {% for car in cars_list %}
-    <div class="pb-3 form-check">
+    <div class="pb-3 form-group">
         <label class="form-check-label">
             <input type="checkbox" value="{{ car.key.id }}" class="form-check-input" name="car-item">
             {{ car['name'] }} - {{ car['manufacturer'] }} - {{ car['year'] }}
         </label>
     </div>
     {% endfor %}
-    <input type="submit" value="Compare these vehicles">
+    <input class="btn btn-lg btn-secondary" type="submit" value="Compare these vehicles">
 </form>
 {% else %}
 <p class="lead">No vehicle yet.</p>

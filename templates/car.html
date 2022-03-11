@@ -100,44 +100,47 @@
         <button type="submit" class="btn btn btn-secondary">Update this vehicle</button>
     </div>
 </form>
-<button class="btn btn btn-secondary" id="show-add-review">Add a review for this vehicle</button>
-<button class="btn btn btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
-<form class="border border-light rounded my-5 p-5 bg-dark" id="add-review-form" action="/add_review" method="post"
-    hidden="true">
-    <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
-    <div class="form-group">
-        <label for="rating_review">Rate this vehicle</label>
-        <input type="range" name="rating_review" id="rating_review" class="form-control-range" min="0" max="10"
-            value="5" oninput="this.nextElementSibling.value = this.value+'/10'" required>
-        <output>5/10</output>
-    </div>
-    <div class="form-group">
-        <label for="text_review">Your review</label>
-        <textarea name="text_review" id="text_review" cols="3" class="form-control" maxlength="1000"
-            required></textarea>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn btn-secondary">Add your review</button>
-    </div>
-</form>
-<h2 class="mt-5">Reviews</h2>
-{% if car['list_reviews']|length > 0 %}
+<div class="text-justify">
+    <h2 class="mt-5">Reviews</h2>
+    <button class="btn btn btn-secondary" id="show-add-review">Add a review for this vehicle</button>
+    <button class="btn btn btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
+    <form class="w-50 border border-light rounded my-5 p-5 bg-dark" id="add-review-form" action="/add_review"
+        method="post" hidden="true">
+        <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
+        <div class="form-group">
+            <label for="rating_review">Rate this vehicle</label>
+            <input type="range" name="rating_review" id="rating_review" class="form-control-range" min="0" max="10"
+                value="5" oninput="this.nextElementSibling.value = this.value+'/10'" required>
+            <output>5/10</output>
+        </div>
+        <div class="form-group">
+            <label for="text_review">Your review</label>
+            <textarea name="text_review" id="text_review" cols="3" class="form-control" maxlength="1000"
+                required></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn btn-secondary">Add your review</button>
+        </div>
+    </form>
+    {% if car['list_reviews']|length > 0 %}
 
-{% for review in car['list_reviews'] %}
-<div class="mb-8 rounded bg-light text-justify">
-    <div class="row text-muted">
-        <h5 class="col">{{ review['name'] }}</h5>
-        <span class="col">Rate : {{ review['rating'] }}/10</span>
-        <span class="col-md-3 align-right">{{ review['timestamp'].strftime('at %H:%M on %Y-%m-%d') }}</span>
+    {% for review in car['list_reviews'] %}
+    <div class="w-50 mb-8 rounded bg-light comment">
+        <div class="text-muted">
+            <h5 class="col">{{ review['name'] }}</h5>
+            <span class="col">Rate : {{ review['rating'] }}/10</span>
+            <span class="col-md-3 align-right">{{ review['timestamp'].strftime('at %H:%M on %Y-%m-%d') }}</span>
+        </div>
+        <p class="bg-secondary">
+            {{ review['text'] }}
+        </p>
     </div>
-    <p class="bg-secondary">
-        {{ review['text'] }}
-    </p>
+    {% endfor %}
+    {% else %}
+    <p class="lead">No review yet.</p>
+    {% endif %}
+
 </div>
-{% endfor %}
-{% else %}
-<p class="lead">No review yet.</p>
-{% endif %}
 <form class="my-2 pb-2" id="delete-car-form" action="/delete_car" method="post">
     <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.id }}">
     <button type="submit" class="btn btn btn-danger">Delete this vehicle</button>
