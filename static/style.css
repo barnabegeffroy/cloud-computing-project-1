@@ -102,4 +102,7 @@ body {
 .comment {
     margin-top: 1%;
     margin-bottom: 1%;
+    display: block;
+    width: 600px;
+    word-wrap: break-word;
 }

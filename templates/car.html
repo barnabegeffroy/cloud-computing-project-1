@@ -8,7 +8,7 @@
 {% block h1 %}Here are the details of the {{ car['name'] }} - {{ car['manufacturer'] }}{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
-<table class="table table-striped">
+<table class="table table-striped w-10">
     <thead>
         <tr>
             <th scope="col">Name</th>
@@ -104,8 +104,8 @@
     <h2 class="mt-5">Reviews</h2>
     <button class="btn btn btn-secondary" id="show-add-review">Add a review for this vehicle</button>
     <button class="btn btn btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
-    <form class="w-50 border border-light rounded my-5 p-5 bg-dark" id="add-review-form" action="/add_review"
-        method="post" hidden="true">
+    <form class="border border-light rounded p-5 bg-dark" id="add-review-form" action="/add_review" method="post"
+        hidden="true">
         <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
         <div class="form-group">
             <label for="rating_review">Rate this vehicle</label>
@@ -125,7 +125,7 @@
     {% if car['list_reviews']|length > 0 %}
 
     {% for review in car['list_reviews'] %}
-    <div class="w-50 mb-8 rounded bg-light comment">
+    <div class="rounded bg-light comment">
         <div class="text-muted">
             <h5 class="col">{{ review['name'] }}</h5>
             <span class="col">Rate : {{ review['rating'] }}/10</span>
