@@ -1,3 +1,4 @@
+import datetime
 import json
 from unittest import result
 import google.oauth2.id_token
@@ -49,7 +50,7 @@ def addCar():
 def createCar(name, manufacturer, year, battery, wltp, cost, power):
     id = abs(hash(name + manufacturer + str(year)))
     entity_key = datastore_client.key(
-        'Vehicles', id)
+        'Vehicle', id)
     if datastore_client.get(entity_key):
         return None
     entity = datastore.Entity(entity_key)
@@ -85,7 +86,8 @@ def putCar():
                 message = "You can't add this vehicle, it already exists !"
                 status = "error"
         except ValueError as exc:
-            error_message = str(exc)
+            message = str(exc)
+            status = "error"
     else:
         message = "You can't add a vehicul without being logged in"
         status = "error"
@@ -96,7 +98,7 @@ def putCar():
 @app.route('/search_cars', methods=['GET'])
 def searchCars():
     result = None
-    query = datastore_client.query(kind='Vehicles')
+    query = datastore_client.query(kind='Vehicle')
 
     if request.args.get('name') != '':
         query.add_filter('name', '=', request.args.get('name'))
@@ -139,7 +141,7 @@ def searchCars():
 
 
 def findCarById(id):
-    entity_key = datastore_client.key('Vehicles', id)
+    entity_key = datastore_client.key('Vehicle', id)
     entity = datastore_client.get(entity_key)
     return entity
 
@@ -155,7 +157,7 @@ def carInfo(id):
 
 
 def deleteCarsById(id):
-    entity_key = datastore_client.key('Vehicles', id)
+    entity_key = datastore_client.key('Vehicle', id)
     datastore_client.delete(entity_key)
 
 
@@ -178,7 +180,7 @@ def deleteCar():
 
 
 def updateCarInfo(id, new_name, new_manufacturer, new_year, new_battery, new_wltp, new_cost, new_power):
-    entity_key = datastore_client.key('Vehicles', id)
+    entity_key = datastore_client.key('Vehicle', id)
     entity = datastore.Entity(key=entity_key)
     entity.update({
         'name': new_name,
@@ -225,7 +227,7 @@ def editCar():
 @ app.route('/compare', methods=['GET'])
 def compare():
     result = None
-    query = datastore_client.query(kind='Vehicles')
+    query = datastore_client.query(kind='Vehicle')
     result = query.fetch()
     return render_template('compare.html', cars_list=result, message=request.args.get('message'), status=request.args.get('status'))
 
@@ -233,7 +235,7 @@ def compare():
 def findCarsByIdList(list):
     entity_key_list = []
     for id in list:
-        entity_key = datastore_client.key('Vehicles', int(id))
+        entity_key = datastore_client.key('Vehicle', int(id))
         entity_key_list.append(entity_key)
     return datastore_client.get_multi(entity_key_list)
 
@@ -279,7 +281,7 @@ def getMinMax(list):
 def compareResult():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
-        return redirect(url_for('.compare', message="You must select at least 2 vehicles to compare them", status="error"))
+        return redirect(url_for('.compare', message="You must select at least 2 Vehicle to compare them", status="error"))
     result = findCarsByIdList(id_list)
     average = getAverage()
     result.append(average)
@@ -290,7 +292,7 @@ def compareResult():
 
 
 def updateAverage():
-    query = datastore_client.query(kind='Vehicles')
+    query = datastore_client.query(kind='Vehicle')
     all_cars = query.fetch()
     size = 0
     total_year = 0
@@ -323,6 +325,49 @@ def getAverage():
     entity_key = datastore_client.key('Average', 'data')
     entity = datastore_client.get(entity_key)
     return entity
+
+
+def createReview(car_id, text, rate, dt, name):
+    entity_key = datastore_client.key('Vehicle', car_id, 'Review')
+    entity = datastore.Entity(entity_key)
+    entity.update({
+        'text': text,
+        'rate': rate,
+        'timestamp': dt,
+        'name': name
+    })
+    datastore_client.put(entity)
+    print("-------------------------------------")
+
+
+@app.route('/add_review', methods=['POST'])
+def addReview():
+    id_token = request.cookies.get("token")
+    message = None
+    status = None
+    car_id = int(request.form['car_id_review'])
+    if id_token:
+        try:
+            claims = google.oauth2.id_token.verify_firebase_token(
+                id_token, firebase_request_adapter)
+            createReview(car_id, request.form['text_review'], int(
+                request.form['rate_review']), datetime.datetime.now(), claims['name'])
+            message = "Review has been added !"
+            status = "success"
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
+    else:
+        message = "You must log in to update a vehicle"
+        status = "error"
+    return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
+
+
+def getReviews(car_id):
+    ancestor_key = datastore_client.key('Vehicle', id)
+    query = datastore_client.query(kind='Review', ancestor=ancestor_key)
+    reviews = query.order = ['-timestamp']
+    return reviews
 
 
 if __name__ == '__main__':
