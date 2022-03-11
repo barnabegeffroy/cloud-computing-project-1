@@ -193,19 +193,39 @@ def deleteCar():
     return redirect(url_for('.root', message=message, status=status))
 
 
-def updateCarInfo(id, new_name, new_manufacturer, new_year, new_battery, new_wltp, new_cost, new_power):
+def updateCarInfo(id, new_battery, new_wltp, new_cost, new_power):
     entity_key = datastore_client.key('Vehicle', id)
     entity = datastore.Entity(key=entity_key)
     entity.update({
-        'name': new_name,
-        'manufacturer': new_manufacturer,
-        'year': new_year,
         'battery': new_battery,
         'wltp': new_wltp,
         'cost': new_cost,
         'power': new_power,
     })
     datastore_client.put(entity)
+
+
+def updateCarId(former_car, name, manufacturer, year, battery, wltp, cost, power):
+    id = abs(hash(name + manufacturer + str(year)))
+    entity_key = datastore_client.key(
+        'Vehicle', id)
+    if datastore_client.get(entity_key):
+        return None
+    entity = datastore.Entity(entity_key)
+    entity.update({
+        'name': name,
+        'manufacturer': manufacturer,
+        'year': year,
+        'battery': battery,
+        'wltp': wltp,
+        'cost': cost,
+        'power': power,
+        'list_reviews': former_car['list_reviews'],
+        'tot_rating': former_car['tot_rating'],
+        'average': former_car['average']
+    })
+    datastore_client.put(entity)
+    return id
 
 
 @app.route('/edit_car', methods=['POST'])
@@ -216,23 +236,28 @@ def editCar():
     car_id = int(request.form['car_id_update'])
     if id_token:
         try:
-            if request.form['new_name'] == request.form['current_name'] and request.form['new_manufacturer'] == request.form['current_manufacturer'] and request.form['new_year'] == request.form['current_year']:
-                updateCarInfo(car_id, request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
-                              request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
-                message = "Vehicle has been updated !"
-                status = "success"
-
-            else:
-                new_car_id = createCar(request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
-                                       request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
-                if car_id:
-                    deleteCarsById(car_id)
-                    car_id = new_car_id
+            car = findCarById(car_id)
+            if car:
+                if request.form['new_name'] == car['name'] and request.form['new_manufacturer'] == car['manufacturer'] and request.form['new_year'] == car['year']:
+                    updateCarInfo(car_id, int(request.form['new_battery']), int(
+                        request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
                     message = "Vehicle has been updated !"
                     status = "success"
                 else:
-                    message = "The information you wish to add corresponds to an existing vehicle"
-                    status = "error"
+                    new_car_id = updateCarId(car, request.form['new_name'], request.form['new_manufacturer'], int(request.form['new_year']), int(
+                        request.form['new_battery']), int(request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
+                    if new_car_id:
+                        deleteCarsById(car_id)
+                        car_id = new_car_id
+                        message = "Vehicle has been updated !"
+                        status = "success"
+                    else:
+                        message = "The information you wish to add corresponds to an existing vehicle"
+                        status = "error"
+            else:
+                message = "Vehicle not found"
+                status = "error"
+
         except ValueError as exc:
             message = str(exc)
             status = "error"
