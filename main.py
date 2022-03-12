@@ -296,9 +296,10 @@ def getMinMax(list):
         "wltp": list[0]['wltp'],
         "cost": list[0]['cost'],
         "power": list[0]['power'],
-        "average": list[0]['average']
+        "average": 10.
     }
     max = min.copy()
+    max["average"] = 0.
     for car in list:
         if car['year'] > max['year']:
             max['year'] = car['year']
@@ -325,10 +326,11 @@ def getMinMax(list):
         if car['power'] < min['power']:
             min['power'] = car['power']
 
-        if car['average'] > max['average']:
-            max['average'] = car['average']
-        if car['average'] < min['average']:
-            min['average'] = car['average']
+        if car['average']:
+            if car['average'] > max['average']:
+                max['average'] = car['average']
+            if car['average'] < min['average']:
+                min['average'] = car['average']
     return (min, max)
 
 
