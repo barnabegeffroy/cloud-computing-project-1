@@ -124,7 +124,7 @@
     </form>
     {% if car['list_reviews']|length > 0 %}
 
-    {% for review in car['list_reviews'] %}
+    {% for review in car['list_reviews'][::-1] %}
     <div class="rounded bg-light comment">
         <div class="text-muted">
             <h5 class="col">{{ review['name'] }}</h5>
