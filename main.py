@@ -32,71 +32,12 @@ def login():
 
 
 @app.route('/find_cars')
-def findCars():
-    return render_template('find_cars.html')
+def findCarsFormPage():
+    return render_template('find_cars_form.html')
 
 
-@app.route('/add_car', methods=['GET'])
-def addCar():
-    id_token = request.cookies.get("token")
-    if id_token:
-        return render_template('add_car.html', message=request.args.get('message'), status=request.args.get('status'))
-    else:
-        return redirect(url_for('.root', message="You must be logged in to add a car", status="error"))
-
-
-def createCar(name, manufacturer, year, battery, wltp, cost, power):
-    id = abs(hash(name + manufacturer + str(year)))
-    entity_key = datastore_client.key(
-        'Vehicle', id)
-    if datastore_client.get(entity_key):
-        return None
-    entity = datastore.Entity(entity_key)
-    entity.update({
-        'name': name,
-        'manufacturer': manufacturer,
-        'year': year,
-        'battery': battery,
-        'wltp': wltp,
-        'cost': cost,
-        'power': power,
-        'list_reviews': [],
-        'tot_rating': 0,
-        'average': None
-    })
-    datastore_client.put(entity)
-    return id
-
-
-@app.route('/put_car', methods=['POST'])
-def putCar():
-    id_token = request.cookies.get("token")
-    message = None
-    status = None
-    if id_token:
-        try:
-            id = createCar(
-                request.form['name'], request.form['manufacturer'],
-                int(request.form['year']), int(request.form['battery']), int(request.form['wltp']), int(request.form['cost']), int(request.form['power']))
-            if id:
-                message = "The vehicle has been added succesfully !"
-                status = "success"
-                return redirect(url_for('.carInfo', id=id, message=message, status=status))
-            else:
-                message = "You can't add this vehicle, it already exists !"
-                status = "error"
-        except ValueError as exc:
-            message = str(exc)
-            status = "error"
-    else:
-        message = "You can't add a vehicul without being logged in"
-        status = "error"
-
-    return redirect(url_for('.addCar', message=message, status=status))
-
-
-@app.route('/search_cars', methods=['GET'])
-def searchCars():
+@app.route('/find_cars_result', methods=['GET'])
+def findCarsResultPage():
     result = None
     message = None
     status = None
@@ -147,20 +88,79 @@ def searchCars():
         message = str(exc)
         status = "error"
 
-    return render_template('result.html', cars_list=result, message=message, status=status)
+    return render_template('find_cars_result.html', cars_list=result, message=message, status=status)
 
 
-def findCarById(id):
+@app.route('/add_car', methods=['GET'])
+def addCarFormPage():
+    id_token = request.cookies.get("token")
+    if id_token:
+        return render_template('add_car_form.html', message=request.args.get('message'), status=request.args.get('status'))
+    else:
+        return redirect(url_for('.root', message="You must be logged in to add a car", status="error"))
+
+
+def createCar(name, manufacturer, year, battery, wltp, cost, power):
+    id = abs(hash(name + manufacturer + str(year)))
+    entity_key = datastore_client.key(
+        'Vehicle', id)
+    if datastore_client.get(entity_key):
+        return None
+    entity = datastore.Entity(entity_key)
+    entity.update({
+        'name': name,
+        'manufacturer': manufacturer,
+        'year': year,
+        'battery': battery,
+        'wltp': wltp,
+        'cost': cost,
+        'power': power,
+        'list_reviews': [],
+        'tot_rating': 0,
+        'average': None
+    })
+    datastore_client.put(entity)
+    return id
+
+
+@app.route('/put_car', methods=['POST'])
+def putCar():
+    id_token = request.cookies.get("token")
+    message = None
+    status = None
+    if id_token:
+        try:
+            id = createCar(
+                request.form['name'], request.form['manufacturer'],
+                int(request.form['year']), int(request.form['battery']), int(request.form['wltp']), int(request.form['cost']), int(request.form['power']))
+            if id:
+                message = "The vehicle has been added succesfully !"
+                status = "success"
+                return redirect(url_for('.carInfoPage', id=id, message=message, status=status))
+            else:
+                message = "You can't add this vehicle, it already exists !"
+                status = "error"
+        except ValueError as exc:
+            message = str(exc)
+            status = "error"
+    else:
+        message = "You can't add a vehicul without being logged in"
+        status = "error"
+
+    return redirect(url_for('.addCarFormPage', message=message, status=status))
+
+
+def getCarById(id):
     entity_key = datastore_client.key('Vehicle', id)
     entity = datastore_client.get(entity_key)
     return entity
 
 
 @app.route('/car_info/<int:id>', methods=['GET'])
-def carInfo(id):
+def carInfoPage(id):
     car = None
     try:
-        car = findCarById(id)
+        car = getCarById(id)
     except ValueError as exc:
         return redirect(url_for('.root', message=str(exc), status="error"))
     if car:
@@ -229,14 +229,14 @@ def updateCarId(former_car, name, manufacturer, year, battery, wltp, cost, power
 
 
 @app.route('/edit_car', methods=['POST'])
-def editCar():
+def editCarPage():
     id_token = request.cookies.get("token")
     message = None
     status = None
     car_id = int(request.form['car_id_update'])
     if id_token:
         try:
-            car = findCarById(car_id)
+            car = getCarById(car_id)
             if car:
                 if request.form['new_name'] == car['name'] and request.form['new_manufacturer'] == car['manufacturer'] and request.form['new_year'] == car['year']:
                     updateCarInfo(car_id, int(request.form['new_battery']), int(
@@ -264,11 +264,11 @@ def editCar():
     else:
         message = "You must log in to update a vehicle"
         status = "error"
-    return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
+    return redirect(url_for('.carInfoPage', id=car_id, message=message, status=status))
 
 
 @app.route('/compare', methods=['GET'])
-def compare():
+def compareFormPage():
     result = None
     message = request.args.get('message')
     status = request.args.get('status')
@@ -278,10 +278,10 @@ def compare():
     except ValueError as exc:
         message = str(exc)
         status = "error"
-    return render_template('compare.html', cars_list=result, message=message, status=status)
+    return render_template('compare_form.html', cars_list=result, message=message, status=status)
 
 
-def findCarsByIdList(list):
+def getCarsByIdList(list):
     entity_key_list = []
     for id in list:
         entity_key = datastore_client.key('Vehicle', int(id))
@@ -335,17 +335,17 @@ def getMinMax(list):
 
 
 @app.route('/compare_result', methods=['POST'])
-def compareResult():
+def compareResultPage():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
-        return redirect(url_for('.compare', message="You must select at least 2 Vehicle to compare them", status="error"))
+        return redirect(url_for('.compareFormPage', message="You must select at least 2 Vehicle to compare them", status="error"))
     result = None
     min = None
     max = None
     message = None
     status = None
     try:
-        result = findCarsByIdList(id_list)
+        result = getCarsByIdList(id_list)
         (min, max) = getMinMax(result)
     except ValueError as exc:
         message = str(exc)
@@ -379,7 +379,7 @@ def createReview(car_id, text, rating, dt, name):
 
 
 @app.route('/add_review', methods=['POST'])
-def addReview():
+def putReview():
     id_token = request.cookies.get("token")
     message = None
     status = None
@@ -400,7 +400,7 @@ def addReview():
     else:
         message = "You must log in to update a vehicle"
         status = "error"
-    return redirect(url_for('.carInfo', id=car_id, message=message, status=status))
+    return redirect(url_for('.carInfoPage', id=car_id, message=message, status=status))
 
 
 if __name__ == '__main__':
