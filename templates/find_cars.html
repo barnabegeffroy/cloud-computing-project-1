@@ -4,7 +4,7 @@
 {% block h1 %}Here is find our vehicles{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
-<form class="my-5 pb-5" action="/search_cars" method="get">
+<form class="my-5 pb-5 lead" action="/search_cars" method="get">
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="name">Name</label>
@@ -71,11 +71,8 @@
                     placeholder="Max" />
             </div>
         </div>
-
-
     </div>
-
-    <button type="submit" class="btn btn btn-secondary">Filter</button>
+    <button type="submit" class="btn btn-lg btn-secondary">Filter</button>
 </form>
 
 {% endblock %}

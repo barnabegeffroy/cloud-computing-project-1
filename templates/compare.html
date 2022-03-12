@@ -4,8 +4,8 @@
 {% block h1 %}Select vehicles you want to compare{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
-{% if cars_list|length > 0 %}
-<form class="text-justify" action="/compare_result" method="post">
+{% if cars_list|length > 1 %}
+<form class="text-justify lead" action="/compare_result" method="post">
     {% for car in cars_list %}
     <div class="pb-3 form-group">
         <label class="form-check-label">
@@ -17,7 +17,7 @@
     <input class="btn btn-lg btn-secondary" type="submit" value="Compare these vehicles">
 </form>
 {% else %}
-<p class="lead">No vehicle yet.</p>
+<p class="lead">Not enough vehicles to compare yet.</p>
 <p class="lead">
     <a href="/add_car" class="btn btn-lg btn-secondary">Add one</a>
 </p>

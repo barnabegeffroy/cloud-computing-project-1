@@ -9,7 +9,7 @@
 {% block classes %}text-center{% endblock %}
 {% block content %}
 {% if not is_empty %}
-<table class="table table-striped">
+<table class="table table-striped lead ">
     <thead>
         <tr>
             <th scope="col">Result</th>
@@ -26,4 +26,7 @@
 </table>
 
 {% endif %}
+<p class="lead">
+    <a href="/find_cars" class="btn btn-lg btn-secondary">New research</a>
+</p>
 {% endblock %}

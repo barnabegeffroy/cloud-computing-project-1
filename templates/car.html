@@ -8,7 +8,7 @@
 {% block h1 %}Here are the details of the {{ car['name'] }} - {{ car['manufacturer'] }}{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
-<table class="table table-striped w-10">
+<table class="table table-striped w-10 lead">
     <thead>
         <tr>
             <th scope="col">Name</th>
@@ -34,8 +34,8 @@
         </tr>
     </tbody>
 </table>
-<button class="btn btn btn-secondary" id="edit-car">Edit this vehicle</button>
-<button class="btn btn btn-secondary" id="hide-edition" hidden="true">Hide edition</button>
+<button class="btn btn-lg btn-secondary" id="edit-car">Edit this vehicle</button>
+<button class="btn btn-lg btn-secondary" id="hide-edition" hidden="true">Hide edition</button>
 <form class="my-5 p-5 border border-light rounded bg-dark" id="edit-car-form" action="/edit_car" method="post"
     hidden="true">
     <input type="hidden" name="car_id_update" id="car_id_update" value="{{ car.key.id }}">
@@ -97,13 +97,13 @@
         </div>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn btn-secondary">Update this vehicle</button>
+        <button type="submit" class="btn btn-lg btn-secondary">Update this vehicle</button>
     </div>
 </form>
 <div class="text-justify">
     <h2 class="mt-5">Reviews</h2>
-    <button class="btn btn btn-secondary" id="show-add-review">Add a review for this vehicle</button>
-    <button class="btn btn btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
+    <button class="btn btn-lg btn-secondary" id="show-add-review">Add a review for this vehicle</button>
+    <button class="btn btn-lg btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
     <form class="border border-light rounded p-5 bg-dark" id="add-review-form" action="/add_review" method="post"
         hidden="true">
         <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
@@ -119,7 +119,7 @@
                 required></textarea>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn btn-secondary">Add your review</button>
+            <button type="submit" class="btn btn-lg btn-secondary">Add your review</button>
         </div>
     </form>
     {% if car['list_reviews']|length > 0 %}
@@ -143,6 +143,6 @@
 </div>
 <form class="my-2 pb-2" id="delete-car-form" action="/delete_car" method="post">
     <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.id }}">
-    <button type="submit" class="btn btn btn-danger">Delete this vehicle</button>
+    <button type="submit" class="btn btn-lg btn-danger">Delete this vehicle</button>
 </form>
 {% endblock %}

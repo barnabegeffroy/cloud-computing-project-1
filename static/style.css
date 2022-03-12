@@ -42,18 +42,8 @@ body {
     text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
 }
 
-.cover-container {
-    max-width: 42em;
-}
-
-
-
 .masthead {
     margin-bottom: 2rem;
-}
-
-.masthead-brand {
-    margin-bottom: 0;
 }
 
 .nav-masthead .nav-link {
@@ -99,7 +89,7 @@ body {
 }
 
 
-.comment {
+.comment, #add-review-form {
     margin-top: 1%;
     margin-bottom: 1%;
     display: block;
