@@ -6,8 +6,3 @@ indexes:
   - name: wltp
   - name: cost  
   - name: power
-- kind: Review
-  ancestor: yes
-  properties:
-  - name: timestamp
-    direction: desc

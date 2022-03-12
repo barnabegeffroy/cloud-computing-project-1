@@ -390,7 +390,7 @@ def addReview():
                 message = "Review has been added !"
                 status = "success"
             else:
-                message = "The database can't find the vehicle for the review"
+                message = "Vehicle not found"
                 status = "error"
         except ValueError as exc:
             message = str(exc)
