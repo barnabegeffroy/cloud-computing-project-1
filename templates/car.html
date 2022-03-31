@@ -76,9 +76,6 @@
                 <input class="form-control" id="new_wltp" name="new_wltp" type="number" min="0" step="1"
                     value="{{ car['wltp'] }}" />
             </div>
-            <div class="form-group ">
-                <input class="form-control" id="max_wltp" name="max_wltp" type="number" min="0" step="1" />
-            </div>
         </div>
         <div class="col border-right">
             <div class="form-group ">
@@ -129,7 +126,7 @@
         <div class="text-muted">
             <h5 class="col">{{ review['name'] }}</h5>
             <span class="col">Rate : {{ review['rating'] }}/10</span>
-            <span class="col-md-3 align-right">{{ review['timestamp'].strftime('at %H:%M on %Y-%m-%d') }}</span>
+            <span class="col-md-3 align-right">{{ review['timestamp'].strftime('%d %B, %Y at %I:%M %p') }}</span>
         </div>
         <p class="bg-secondary">
             {{ review['text'] }}
