@@ -195,7 +195,7 @@ def deleteCar():
 
 def updateCarInfo(id, new_battery, new_wltp, new_cost, new_power):
     entity_key = datastore_client.key('Vehicle', id)
-    entity = datastore.Entity(key=entity_key)
+    entity = datastore_client.get(entity_key)
     entity.update({
         'battery': new_battery,
         'wltp': new_wltp,
@@ -238,7 +238,7 @@ def editCarPage():
         try:
             car = getCarById(car_id)
             if car:
-                if request.form['new_name'] == car['name'] and request.form['new_manufacturer'] == car['manufacturer'] and request.form['new_year'] == car['year']:
+                if request.form['new_name'] == car['name'] and request.form['new_manufacturer'] == car['manufacturer'] and int(request.form['new_year']) == car['year']:
                     updateCarInfo(car_id, int(request.form['new_battery']), int(
                         request.form['new_wltp']), int(request.form['new_cost']), int(request.form['new_power']))
                     message = "Vehicle has been updated !"
