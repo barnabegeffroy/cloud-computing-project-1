@@ -403,5 +403,10 @@ def putReview():
     return redirect(url_for('.carInfoPage', id=car_id, message=message, status=status))
 
 
+@app.errorhandler(404)
+def notFound(error):
+    return redirect(url_for('.root', message=error, status="error"))
+
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
