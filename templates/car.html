@@ -38,7 +38,7 @@
 <button class="btn btn-lg btn-secondary" id="hide-edition" hidden="true">Hide edition</button>
 <form class="my-5 p-5 border border-light rounded bg-dark" id="edit-car-form" action="/edit_car" method="post"
     hidden="true">
-    <input type="hidden" name="car_id_update" id="car_id_update" value="{{ car.key.id }}">
+    <input type="hidden" name="car_id_update" id="car_id_update" value="{{ car.key.name }}">
     <div class="form-row">
         <div class="form-group col-md-6">
             <input type="hidden" id="current_name" name="current_name" value="{{ car['name'] }}">
@@ -103,7 +103,7 @@
     <button class="btn btn-lg btn-secondary" id="hide-add-review" hidden="true">Hide form to add a review</button>
     <form class="border border-light rounded p-5 bg-dark" id="add-review-form" action="/add_review" method="post"
         hidden="true">
-        <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.id }}">
+        <input type="hidden" name="car_id_review" id="car_id_update" value="{{ car.key.name }}">
         <div class="form-group">
             <label for="rating_review">Rate this vehicle</label>
             <input type="range" name="rating_review" id="rating_review" class="form-control-range" min="0" max="10"
@@ -139,7 +139,7 @@
 
 </div>
 <form class="my-2 pb-2" id="delete-car-form" action="/delete_car" method="post">
-    <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.id }}">
+    <input type="hidden" id="car_id_delete" name="car_id_delete" value="{{ car.key.name }}">
     <button type="submit" class="btn btn-lg btn-danger">Delete this vehicle</button>
 </form>
 {% endblock %}

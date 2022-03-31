@@ -18,7 +18,7 @@
     <tbody>
         {% for car in cars_list %}
         <tr>
-            <th scope="row"><a href="/car_info/{{car.key.id}}" class="btn btn-secondary stretched-link">{{
+            <th scope="row"><a href="/car_info/{{car.key.name}}" class="btn btn-secondary stretched-link">{{
                     car['name'] }} - {{ car['manufacturer'] }} - {{ car['year'] }}</a></th>
         </tr>
         {% endfor %}

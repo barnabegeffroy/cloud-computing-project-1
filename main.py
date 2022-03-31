@@ -1,4 +1,5 @@
 import datetime
+import hashlib
 import google.oauth2.id_token
 from flask import Flask, render_template, request, redirect, url_for
 from google.auth.transport import requests
@@ -101,7 +102,7 @@ def addCarFormPage():
 
 
 def createCar(name, manufacturer, year, battery, wltp, cost, power):
-    id = abs(hash(name + manufacturer + str(year)))
+    id = hashlib.md5((name + manufacturer + str(year)).encode()).hexdigest()
     entity_key = datastore_client.key(
         'Vehicle', id)
     if datastore_client.get(entity_key):
@@ -156,7 +157,7 @@ def getCarById(id):
     return entity
 
 
-@app.route('/car_info/<int:id>', methods=['GET'])
+@app.route('/car_info/<string:id>', methods=['GET'])
 def carInfoPage(id):
     car = None
     try:
@@ -181,7 +182,7 @@ def deleteCar():
     status = None
     if id_token:
         try:
-            deleteCarsById(int(request.form['car_id_delete']))
+            deleteCarsById(request.form['car_id_delete'])
             message = "Vehicle has been deleted !"
             status = "success"
         except ValueError as exc:
@@ -206,7 +207,7 @@ def updateCarInfo(id, new_battery, new_wltp, new_cost, new_power):
 
 
 def updateCarId(former_car, name, manufacturer, year, battery, wltp, cost, power):
-    id = abs(hash(name + manufacturer + str(year)))
+    id = hashlib.md5((name + manufacturer + str(year)).encode()).hexdigest()
     entity_key = datastore_client.key(
         'Vehicle', id)
     if datastore_client.get(entity_key):
@@ -233,7 +234,7 @@ def editCarPage():
     id_token = request.cookies.get("token")
     message = None
     status = None
-    car_id = int(request.form['car_id_update'])
+    car_id = request.form['car_id_update']
     if id_token:
         try:
             car = getCarById(car_id)
@@ -284,7 +285,7 @@ def compareFormPage():
 def getCarsByIdList(list):
     entity_key_list = []
     for id in list:
-        entity_key = datastore_client.key('Vehicle', int(id))
+        entity_key = datastore_client.key('Vehicle', id)
         entity_key_list.append(entity_key)
     return datastore_client.get_multi(entity_key_list)
 
@@ -383,7 +384,7 @@ def putReview():
     id_token = request.cookies.get("token")
     message = None
     status = None
-    car_id = int(request.form['car_id_review'])
+    car_id = request.form['car_id_review']
     if id_token:
         try:
             claims = google.oauth2.id_token.verify_firebase_token(

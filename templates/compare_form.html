@@ -9,7 +9,7 @@
     {% for car in cars_list %}
     <div class="pb-3 form-group">
         <label class="form-check-label">
-            <input type="checkbox" value="{{ car.key.id }}" class="form-check-input" name="car-item">
+            <input type="checkbox" value="{{ car.key.name }}" class="form-check-input" name="car-item">
             {{ car['name'] }} - {{ car['manufacturer'] }} - {{ car['year'] }}
         </label>
     </div>
