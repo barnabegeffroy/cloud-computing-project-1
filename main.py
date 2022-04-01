@@ -365,7 +365,6 @@ def createReview(car_id, text, rating, dt, name):
             'timestamp': dt,
             'name': name
         })
-        print(review_entity)
         new_reviews_list = car_entity['list_reviews']
         new_reviews_list.append(review_entity)
         car_entity.update({
