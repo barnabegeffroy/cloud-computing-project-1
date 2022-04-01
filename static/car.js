@@ -1,7 +1,6 @@
 window.addEventListener('load', function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
-
             document.getElementById('show-add-review').onclick = function () {
                 document.getElementById('add-review-form').hidden = false;
                 document.getElementById('show-add-review').hidden = true;
