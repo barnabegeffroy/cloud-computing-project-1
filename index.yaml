@@ -1,8 +1,6 @@
 indexes:
 - kind: Vehicle
   properties:
+  - name: name
+  - name: manufacturer
   - name: year
-  - name: battbery  
-  - name: wltp
-  - name: cost  
-  - name: power

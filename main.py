@@ -39,7 +39,7 @@ def findCarsFormPage():
 
 @app.route('/find_cars_result', methods=['GET'])
 def findCarsResultPage():
-    result = None
+    result = []
     message = None
     status = None
     try:
@@ -52,39 +52,50 @@ def findCarsResultPage():
             query.add_filter('manufacturer', '=',
                              request.args.get('manufacturer'))
 
-        if request.args.get('min_year') != '':
-            query.add_filter('year', '>=', int(request.args.get('min_year')))
+        min = request.args.get('min_year')
+        if min != '':
+            query.add_filter('year', '>=', int(min))
+        max = request.args.get('max_year')
+        if max != '':
+            query.add_filter('year', '<=', int(max))
 
-        if request.args.get('max_year') != '':
-            query.add_filter('year', '<=', int(request.args.get('max_year')))
+        vehicles = list(query.fetch())
 
-        if request.args.get('min_battery') != '':
-            query.add_filter('battery', '>=', int(
-                request.args.get('min_battery')))
+        for vehicle in vehicles:
+            if request.args.get('min_battery') != '':
+                if not vehicle['battery'] >= int(
+                        request.args.get('min_battery')):
+                    continue
+            if request.args.get('max_battery') != '':
+                if not vehicle['battery'] <= int(
+                        request.args.get('max_battery')):
+                    continue
 
-        if request.args.get('max_battery') != '':
-            query.add_filter('battery', '<=', int(
-                request.args.get('max_battery')))
+            if request.args.get('min_wltp') != '':
+                if not vehicle['wltp'] >= int(request.args.get('min_wltp')):
+                    continue
 
-        if request.args.get('min_wltp') != '':
-            query.add_filter('wltp', '>=', int(request.args.get('min_wltp')))
+            if request.args.get('max_wltp') != '':
+                if not vehicle['wltp'] <= int(request.args.get('max_wltp')):
+                    continue
 
-        if request.args.get('max_wltp') != '':
-            query.add_filter('wltp', '<=', int(request.args.get('max_wltp')))
+            if request.args.get('min_cost') != '':
+                if not vehicle['cost'] >= int(request.args.get('min_cost')):
+                    continue
 
-        if request.args.get('min_cost') != '':
-            query.add_filter('cost', '>=', int(request.args.get('min_cost')))
+            if request.args.get('max_cost') != '':
+                if not vehicle['cost'] <= int(request.args.get('max_cost')):
+                    continue
 
-        if request.args.get('max_cost') != '':
-            query.add_filter('cost', '<=', request.args.get('max_cost'))
+            if request.args.get('min_power') != '':
+                if not vehicle['power'] >= int(request.args.get('min_power')):
+                    continue
 
-        if request.args.get('min_power') != '':
-            query.add_filter('power', '>=', int(request.args.get('min_power')))
+            if request.args.get('max_power') != '':
+                if not vehicle['power'] <= int(request.args.get('max_power')):
+                    continue
+            result.append(vehicle)
 
-        if request.args.get('max_power') != '':
-            query.add_filter('power', '<=', int(request.args.get('max_power')))
-
-        result = list(query.fetch())
     except ValueError as exc:
         message = str(exc)
         status = "error"
@@ -92,7 +103,7 @@ def findCarsResultPage():
     return render_template('find_cars_result.html', cars_list=result, message=message, status=status)
 
 
-@app.route('/add_car', methods=['GET'])
+@ app.route('/add_car', methods=['GET'])
 def addCarFormPage():
     id_token = request.cookies.get("token")
     if id_token:
@@ -124,7 +135,7 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
     return id
 
 
-@app.route('/put_car', methods=['POST'])
+@ app.route('/put_car', methods=['POST'])
 def putCar():
     id_token = request.cookies.get("token")
     message = None
@@ -157,7 +168,7 @@ def getCarById(id):
     return entity
 
 
-@app.route('/car_info/<string:id>', methods=['GET'])
+@ app.route('/car_info/<string:id>', methods=['GET'])
 def carInfoPage(id):
     car = None
     try:
@@ -175,7 +186,7 @@ def deleteCarsById(id):
     datastore_client.delete(entity_key)
 
 
-@app.route('/delete_car', methods=['POST'])
+@ app.route('/delete_car', methods=['POST'])
 def deleteCar():
     id_token = request.cookies.get("token")
     message = None
@@ -229,7 +240,7 @@ def updateCarId(former_car, name, manufacturer, year, battery, wltp, cost, power
     return id
 
 
-@app.route('/edit_car', methods=['POST'])
+@ app.route('/edit_car', methods=['POST'])
 def editCarPage():
     id_token = request.cookies.get("token")
     message = None
@@ -268,7 +279,7 @@ def editCarPage():
     return redirect(url_for('.carInfoPage', id=car_id, message=message, status=status))
 
 
-@app.route('/compare', methods=['GET'])
+@ app.route('/compare', methods=['GET'])
 def compareFormPage():
     result = None
     message = request.args.get('message')
@@ -335,7 +346,7 @@ def getMinMax(list):
     return (min, max)
 
 
-@app.route('/compare_result', methods=['POST'])
+@ app.route('/compare_result', methods=['POST'])
 def compareResultPage():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
@@ -378,7 +389,7 @@ def createReview(car_id, text, rating, dt, name):
         return False
 
 
-@app.route('/add_review', methods=['POST'])
+@ app.route('/add_review', methods=['POST'])
 def putReview():
     id_token = request.cookies.get("token")
     message = None
@@ -403,7 +414,7 @@ def putReview():
     return redirect(url_for('.carInfoPage', id=car_id, message=message, status=status))
 
 
-@app.errorhandler(404)
+@ app.errorhandler(404)
 def notFound(error):
     return redirect(url_for('.root', message=error, status="error"))
 

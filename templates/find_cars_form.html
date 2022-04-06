@@ -8,18 +8,19 @@
 {% block h1 %}Here is find our vehicles{% endblock %}
 {% block classes %}text-center{% endblock %}
 {% block content %}
-<div class="form-row">
-    <div class="form-group col-md-6">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="The name of the vehicle">
+<form class="my-5 pb-5 lead" action="/find_cars_result" method="get">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="The name of the vehicle">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="manufacturer">Manufacturer</label>
+            <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Manufacturer">
+        </div>
     </div>
-    <div class="form-group col-md-6">
-        <label for="manufacturer">Manufacturer</label>
-        <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Manufacturer">
-    </div>
-</div>
-<div class="form-row">
-    <form class="my-5 pb-5 lead" id="form-year" action="/find_cars_result" method="get">
+
+    <div class="form-row">
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label col-sm" for="year">Year</label>
@@ -31,9 +32,6 @@
                     step="1" placeholder="Max" />
             </div>
         </div>
-        <button type="button" onclick="dosubmit('form-year')" class="btn btn-lg btn-secondary">Filter</button>
-    </form>
-    <form class="my-5 pb-5 lead" id="form-battery" action="/find_cars_result" method="get">
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label col-sm" for="min_battery">Battery size in Kwh:</label>
@@ -45,9 +43,6 @@
                     placeholder="Max" />
             </div>
         </div>
-        <button type="button" onclick="dosubmit('form-battery')" class="btn btn-lg btn-secondary">Filter</button>
-    </form>
-    <form class="my-5 pb-5 lead" id="form-wltp" action="/find_cars_result" method="get">
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label col-sm" for="min_wltp">WLTP range in Km:</label>
@@ -59,9 +54,6 @@
                     placeholder="Max" />
             </div>
         </div>
-        <button type="button" onclick="dosubmit('form-wltp')" class="btn btn-lg btn-secondary">Filter</button>
-    </form>
-    <form class="my-5 pb-5 lead" id="form-cost" action="/find_cars_result" method="get">
         <div class="col border-right">
             <div class="form-group ">
                 <label class="control-label col-sm" for="min_cost">Cost in €:</label>
@@ -73,9 +65,6 @@
                     placeholder="Max" />
             </div>
         </div>
-        <button type="button" onclick="dosubmit('form-cost')" class="btn btn-lg btn-secondary">Filter</button>
-    </form>
-    <form class="my-5 pb-5 lead" id="form-power" action="/find_cars_result" method="get">
         <div class="col">
             <div class="form-group ">
                 <label class="control-label col-sm" for="min_power">Power in Kw:</label>
@@ -87,8 +76,8 @@
                     placeholder="Max" />
             </div>
         </div>
-        <button type="button" onclick="dosubmit('form-power')" class="btn btn-lg btn-secondary">Filter</button>
-</div>
+    </div>
+    <button type="submit" class="btn btn-lg btn-secondary">Filter</button>
 </form>
 
 {% endblock %}

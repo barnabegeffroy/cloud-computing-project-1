@@ -17,9 +17,3 @@ window.onload = function () {
     });
 
 }
-
-function dosubmit(formId) {
-    var name = document.getElementById("name").setAttribute("form", formId);
-    var manufacturer = document.getElementById("manufacturer").setAttribute("form", formId);
-    document.getElementById(formId).submit();
-}
