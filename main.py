@@ -103,7 +103,7 @@ def findCarsResultPage():
     return render_template('find_cars_result.html', cars_list=result, message=message, status=status)
 
 
-@ app.route('/add_car', methods=['GET'])
+@app.route('/add_car', methods=['GET'])
 def addCarFormPage():
     id_token = request.cookies.get("token")
     if id_token:
@@ -135,7 +135,7 @@ def createCar(name, manufacturer, year, battery, wltp, cost, power):
     return id
 
 
-@ app.route('/put_car', methods=['POST'])
+@app.route('/put_car', methods=['POST'])
 def putCar():
     id_token = request.cookies.get("token")
     message = None
@@ -168,7 +168,7 @@ def getCarById(id):
     return entity
 
 
-@ app.route('/car_info/<string:id>', methods=['GET'])
+@app.route('/car_info/<string:id>', methods=['GET'])
 def carInfoPage(id):
     car = None
     try:
@@ -186,7 +186,7 @@ def deleteCarsById(id):
     datastore_client.delete(entity_key)
 
 
-@ app.route('/delete_car', methods=['POST'])
+@app.route('/delete_car', methods=['POST'])
 def deleteCar():
     id_token = request.cookies.get("token")
     message = None
@@ -240,7 +240,7 @@ def updateCarId(former_car, name, manufacturer, year, battery, wltp, cost, power
     return id
 
 
-@ app.route('/edit_car', methods=['POST'])
+@app.route('/edit_car', methods=['POST'])
 def editCarPage():
     id_token = request.cookies.get("token")
     message = None
@@ -279,7 +279,7 @@ def editCarPage():
     return redirect(url_for('.carInfoPage', id=car_id, message=message, status=status))
 
 
-@ app.route('/compare', methods=['GET'])
+@app.route('/compare', methods=['GET'])
 def compareFormPage():
     result = None
     message = request.args.get('message')
@@ -346,7 +346,7 @@ def getMinMax(list):
     return (min, max)
 
 
-@ app.route('/compare_result', methods=['POST'])
+@app.route('/compare_result', methods=['POST'])
 def compareResultPage():
     id_list = request.form.getlist('car-item')
     if len(id_list) < 2:
@@ -389,7 +389,7 @@ def createReview(car_id, text, rating, dt, name):
         return False
 
 
-@ app.route('/add_review', methods=['POST'])
+@app.route('/add_review', methods=['POST'])
 def putReview():
     id_token = request.cookies.get("token")
     message = None
@@ -414,7 +414,7 @@ def putReview():
     return redirect(url_for('.carInfoPage', id=car_id, message=message, status=status))
 
 
-@ app.errorhandler(404)
+@app.errorhandler(404)
 def notFound(error):
     return redirect(url_for('.root', message=error, status="error"))
 
